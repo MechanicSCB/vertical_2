@@ -7,6 +7,9 @@
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
+        {{-- <link rel="preload" href="{{ asset('fonts/circe/Regular.woff2') }}" as="font" crossorigin="anonymous">--}}
+        {{-- <link rel="preload" href="{{ asset('fonts/circe/Bold.woff2') }}" as="font" crossorigin="anonymous">--}}
+        {{-- <link rel="preload" href="{{ asset('fonts/circe/Black.woff2') }}" as="font" crossorigin="anonymous">--}}
 
         <!-- Scripts -->
         @routes

@@ -8,7 +8,7 @@ use App\Models\Node;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\ArrayShape;
 
-class moveOrCopyNode
+class MoveOrCopyNode
 {
     #[ArrayShape(['type' => "string", 'body' => "string"])]
     public function moveOrCopyNode(Node $targetNode, Node $destNode, bool $isCopyMode = false): array

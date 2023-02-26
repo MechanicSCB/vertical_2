@@ -5,7 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Models\Category;
 use App\Models\Node;
+use App\Models\Product;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Inertia\Response;
 use Inertia\ResponseFactory;
 
@@ -20,41 +26,54 @@ class CategoryController extends Controller
 
     public function show(string $path): Response|ResponseFactory
     {
-        $slugs = explode('/', $path);
+        $ancestorsCategories = $this->getAncestorsCategories($path);
+        $breadcrumbs = $this->getBreadcrumbs($path, $ancestorsCategories);
+        $categoryNode = $this->getCategoryNodeFromPath($path, $ancestorsCategories);
+        $subCategories = $categoryNode->children->append(['image', 'title', 'url']);
+        $productsQuery = $this->getProductsQuery($categoryNode['path']);
+        $productsFilteredQuery = $this->getProductsFilteredQuery($productsQuery);
+        $filterData = $this->getFilterData(clone($productsFilteredQuery));
+        $products = $productsFilteredQuery->paginate()->onEachSide(1)->withQueryString();
+        // TODO fix page max in Vue (если, текущая страница больше максимальной, сбросить на последнюю или первую)
+        //df(tmr(@$this->start), $filterData,$products);
 
-        $categories = Category::query()
-            ->whereIn('slug', $slugs)
-            ->get(['id', 'slug', 'title'])
-            ->keyBy('slug')
-        ;
+        return inertia('Categories/Show', compact('breadcrumbs', 'categoryNode', 'subCategories','filterData', 'products'));
+    }
 
-        $sep = Node::$separator;
-        $nodePath = '1.';
-        $breadcrumbs = [];
-        $url = '/catalog';
+    public function getProductsQuery(string $categoryNodePath): Builder
+    {
+        $allSubCategoriesIds = Node::query()
+            ->where('path', 'like', $categoryNodePath . Node::$separator . '%')
+            ->orWhere('path', '=', $categoryNodePath)
+            ->pluck('category_id');
 
-        foreach ($slugs as $key => $slug) {
-            $nodePath .= $categories[$slug]['id'] . $sep;
-            $url .= "/{$categories[$slug]['slug']}";
+        $productsQuery = DB::table('products')->whereIn('category_id', $allSubCategoriesIds);
 
-            $breadcrumbs[] = [
-                'title' => $categories[$slug]['title'],
-                'url' => $url
-            ];
+        return $productsQuery;
+    }
+
+    public function getProductsFilteredQuery(Builder $productsQuery): Builder
+    {
+        $filter = request()->all();
+
+        if (isset($filter['priceFrom'])) {
+            $productsQuery->where('price', '>=', $filter['priceFrom']);
         }
 
-        $categoryNode = Node::query()
-            ->with('category:id,slug,title') // in order not to take all category fields
-            ->where('path', '=', trim($nodePath, $sep))
-            ->firstOrFail()
-            ->append('title');
+        if (isset($filter['priceTo'])) {
+            $productsQuery->where('price', '<=', $filter['priceTo']);
+        }
 
-        $subCategories = Node::query()
-            ->where('parent_path', $categoryNode['path'])
-            ->get()
-            ->append(['image', 'title', 'url']);
+        return $productsQuery;
+    }
 
-        return inertia('Categories/Show', compact('categoryNode', 'subCategories','breadcrumbs'));
+    public function getFilterData(Builder $productsQuery)
+    {
+        $filterData['minPrice']  = (clone($productsQuery))->orderBy('price')->first('price')->price;
+        $filterData['maxPrice']  = (clone($productsQuery))->orderByDesc('price')->first('price')->price;
+        $filterData['vendors']  = (clone($productsQuery))->distinct()->orderBy('vendor')->pluck('vendor')->filter()->values();
+
+        return $filterData;
     }
 
     //public function create(): Response|ResponseFactory
@@ -114,4 +133,54 @@ class CategoryController extends Controller
 
         return back()->with('success', __('flash.successfully_deleted'));
     }
+
+
+    // TODO: replace methods below to other classes?
+    public function getBreadcrumbs(string $path, array $ancestorsCategories): array
+    {
+        $breadcrumbs = [];
+        $url = '/catalog';
+
+        foreach (explode('/', $path) as $slug) {
+            $url .= "/{$ancestorsCategories[$slug]['slug']}";
+
+            $breadcrumbs[] = [
+                'title' => $ancestorsCategories[$slug]['title'],
+                'url' => $url,
+            ];
+        }
+
+        return $breadcrumbs;
+    }
+
+    public function getAncestorsCategories(string $path): array
+    {
+        $ancestorsCategories = Category::query()
+            ->whereIn('slug', explode('/', $path))
+            ->get(['id', 'slug', 'title'])
+            ->toBase()
+            ->keyBy('slug')
+            ->toArray();
+
+        return $ancestorsCategories;
+    }
+
+    public function getCategoryNodeFromPath(string $path, array $ancestorsCategories): Node
+    {
+        $nodePath = '1.';
+
+        foreach (explode('/', $path) as $slug) {
+            $nodePath .= $ancestorsCategories[$slug]['id'] . Node::$separator;
+        }
+
+        $categoryNode = Node::query()
+            ->with('category:id,slug,title') // in order not to take all category fields
+            ->where('path', '=', trim($nodePath, Node::$separator))
+            ->firstOrFail()
+            ->append('title');
+
+        return $categoryNode;
+    }
+
+
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Nodes\moveOrCopyNode;
+use App\Actions\Nodes\MoveOrCopyNode;
 use App\Classes\TreeHandler;
 use App\Models\Node;
 use Illuminate\Http\RedirectResponse;
@@ -30,14 +30,14 @@ class NodeController extends Controller
     public function copy(Node $targetNode, Node $destNode): RedirectResponse
     {
         // $actionResultMsg = ['type'=>'success','body' => 'успешно скопировано']
-        $actionResultMsg = (new moveOrCopyNode())->moveOrCopyNode($targetNode, $destNode, true);
+        $actionResultMsg = (new MoveOrCopyNode())->moveOrCopyNode($targetNode, $destNode, true);
 
         return back()->with($actionResultMsg['type'], $actionResultMsg['body']);
     }
 
     public function move(Node $targetNode, Node $destNode): RedirectResponse
     {
-        $actionResultMsg = (new moveOrCopyNode())->moveOrCopyNode($targetNode, $destNode, false);
+        $actionResultMsg = (new MoveOrCopyNode())->moveOrCopyNode($targetNode, $destNode, false);
 
         return back()->with($actionResultMsg['type'], $actionResultMsg['body']);
     }

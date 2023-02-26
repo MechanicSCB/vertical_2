@@ -1,15 +1,21 @@
 <script setup>
 import ProductCard from "./ProductCard.vue";
-
+import Pagination from "./Pagination.vue";
 let props = defineProps({
     products:Object,
 });
 </script>
 
 <template>
-    <div class="mx-auto md:px-10 px-2 grid 2xl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 max-w-[1656px] gap-x-4 gap-y-8">
-        <div v-for="product in products">
-            <ProductCard :product="product"/>
+    <div>
+        <Pagination :links="products.links" class="mt-3 mb-4"/>
+
+        <div class="grid xl:grid-cols-2 grid-cols-1 gap-9">
+            <div v-for="product in products.data">
+                <ProductCard :product="product"/>
+            </div>
         </div>
+
+        <Pagination :links="products.links" class="mt-3 mb-4"/>
     </div>
 </template>

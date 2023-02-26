@@ -11,7 +11,7 @@ import PhoneIcon from "../../Svg/PhoneIcon.vue";
 <template>
     <!--    chock    -->
     <div class="h-14"></div>
-    <div class="fixed top-0 w-full bg-ui-section flex justify-between items-center shadow-lg h-14 py-3 md:px-10 px-2 mb-4">
+    <div class="fixed z-50 top-0 w-full bg-ui-section flex justify-between items-center shadow-lg h-14 py-3 md:px-10 px-2 mb-4">
         <div class="left_header flex items-center xs:gap-6 gap-2">
             <HamburgerButton class="mr-3"/>
             <Link href="/drag">

@@ -20,12 +20,15 @@ return new class extends Migration
             $table->string('model')->nullable();
             $table->string('name');
             $table->string('slug');
-            $table->string('url');
             $table->integer('price')->nullable();
             $table->integer('old_price')->nullable();
             $table->text('description')->nullable();
             $table->jsonb('params')->nullable();
-            $table->jsonb('info')->nullable();
+
+            $table->integer('image_count')->nullable();
+            $table->integer('reply_count')->nullable();
+            $table->string('availability')->nullable();
+            $table->float('order')->nullable();
 
             $table->timestamps();
         });

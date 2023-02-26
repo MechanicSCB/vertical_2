@@ -17,6 +17,9 @@ use Inertia\Inertia;
 |
 */
 
+Route::get('/test', [\App\Dev\Parser::class,'run']);
+//Route::get('/seed', [\Database\Seeders\ProductSeeder::class,'run']);
+
 Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/catalog', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/catalog/{path}', [CategoryController::class, 'show'])->where('path', '[a-zA-Z0-9/_-]+')->name('categories.show');
