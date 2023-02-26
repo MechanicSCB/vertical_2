@@ -19,6 +19,7 @@ services:
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
         volumes:
             - '.:/var/www/html'
+            - '../common_data:/var/www/html/common_data' # DEV ONLY!
         networks:
             - sail
         depends_on:
