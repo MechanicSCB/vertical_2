@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\NodeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -15,15 +17,22 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/catalog', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/catalog/{path}', [CategoryController::class, 'show'])->where('path', '[a-zA-Z0-9/_-]+')->name('categories.show');
+//Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+//Route::post('/categories',[CategoryController::class, 'store'])->name('categories.store');
+Route::get('/categories/edit/{category}', [CategoryController::class, 'edit'])->name('categories.edit');
+//Route::patch('/categories/{category}',[CategoryController::class, 'update'])->name('categories.update');
+Route::delete('/categories/{category}',[CategoryController::class, 'destroy'])->name('categories.destroy');
 
+Route::get('/tree', [NodeController::class, 'index'])->name('nodes.index');
+Route::post('/nodes/copy/{target_node}/to/{dest_node}', [NodeController::class, 'copy'])->name('nodes.copy');
+Route::post('/nodes/move/{target_node}/to/{dest_node}', [NodeController::class, 'move'])->name('nodes.move');
+Route::delete('/nodes/{node}', [NodeController::class, 'destroy'])->name('nodes.destroy');
+
+
+// JETSTREAM
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

@@ -15,6 +15,42 @@ module.exports = {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                ui: {
+                    body: 'var(--color-ui-body)',
+                    section: 'var(--color-ui-section)',
+                    accent: 'var(--color-ui-accent)',
+                    secondary: 'var(--color-ui-secondary)',
+                    light: 'var(--color-ui-light)',
+                    text: {
+                        primary: 'var(--color-ui-text-primary)',
+                        accent: 'var(--color-ui-text-accent)',
+                        accent_inverse: 'var(--color-ui-text-accent-inverse)',
+                        secondary: 'var(--color-ui-text-secondary)',
+                        light: 'var(--color-ui-text-light)',
+                    },
+                    link: {
+                        text: 'var(--color-ui-link-text)',
+                        hover: 'var(--color-ui-link-text-hover)',
+                        active: 'var(--color-ui-link-text-active)',
+                        disabled: 'var(--color-ui-link-text-disabled)',
+                    },
+                    border: {
+                        primary: 'var(--color-ui-border-primary)',
+                        hover: 'var(--color-ui-border-hover)',
+                        active: 'var(--color-ui-border-active)',
+                    },
+                },
+                gray: {
+                    '50': '#fafafa',
+                },
+            },
+            fontSize: {
+                'xxs': '.6rem',
+            },
+            screens: {
+                'xs': '480px',
+            },
         },
     },
 

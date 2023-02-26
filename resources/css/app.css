@@ -1,3 +1,75 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    * {
+        scrollbar-color: var(--color-ui-accent) var(--color-ui-secondary);
+        scrollbar-width: thin;
+        border-color: var(--color-ui-border-primary);
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-ui-secondary);
+        border-radius: 8px;
+    }
+
+    :root {
+        --color-ui-body: #fff;
+        --color-ui-section: #fff;
+        --color-ui-accent: #e1313b;
+        --color-ui-secondary: #d7d8da;
+        --color-ui-light: rgba(216,216,216,.16);
+
+        --color-ui-text-primary: #000;
+        --color-ui-text-accent-inverse: #fff;
+        --color-ui-text-accent: #e1313b;
+        --color-ui-text-secondary: #666970;
+        --color-ui-text-light: #d7d8da;
+
+        --color-ui-link-text: #666970;
+        --color-ui-link-text-hover: #e1313b;
+        --color-ui-link-text-active: #e1313b;
+        --color-ui-link-text-disabled: #d7d8da;
+
+        --color-ui-border-primary: #d7d8da;
+        --color-ui-border-hover: #e1313b;
+        --color-ui-border-active: #e1313b;
+    }
+
+    body {
+        overflow-y: scroll;
+    }
+
+    body.dark {
+        /*--color-ui-bg:49 49 51;*/
+        /*--color-ui-section:38 39 41;*/
+        /*--color-ui-accent:0 0 0;*/
+
+        /*--color-ui-bg: #16171b;*/
+        /*--color-ui-section: #222327;*/
+        /*--color-ui-accent: rgba(0, 0, 0, 0.4);*/
+
+        /*--color-ui-header: #000;*/
+
+        /*--color-ui-text: #efefef;*/
+        /*--color-ui-text-lc: #c9c9c9 !important;*/
+        /*--color-ui-text-hc: #f1f3f5;*/
+
+        /*--color-ui-link-text: #c0c0c0;*/
+        /*--color-ui-link-text-hover: #6795de;*/
+        /*--color-ui-link-text-active: #ebebeb;*/
+        /*--color-ui-link-text-disabled: #7d7d7d;*/
+
+        /*--color-ui-alt-link-text: #6795de;*/
+        /*--color-ui-alt-link-text-hover: #7ca4e3;*/
+        /*--color-ui-alt-link-text-active: #bb432c;*/
+
+        /*--color-ui-border: hsla(0, 0%, 100%, 0.125);*/
+    }
+}
