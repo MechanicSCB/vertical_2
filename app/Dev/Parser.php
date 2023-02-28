@@ -13,8 +13,57 @@ class Parser
 {
     public function run()
     {
-        df(tmr(@$this->start), 'run?');
+        $products = Product::query()
+            ->toBase()
+            ->get(['id','slug'])
+            ->groupBy('slug')
+            ->filter(fn($v) => count($v) > 1)
+        ;
 
+        df(tmr(@$this->start), $products);
+    }
+
+    public function parseProductParams()
+    {
+        set_time_limit(300);
+        $productsData = [];
+        $htmlDir = base_path('common_data/html/');
+        $htmlFileNames = scandir($htmlDir);
+        $htmlFileNames = array_filter($htmlFileNames, fn($v) => str_ends_with($v, '.html'));
+        //$htmlFileNames = array_slice($htmlFileNames, 0, 100);
+
+        foreach ($htmlFileNames as $fileName) {
+            $html = file_get_contents($htmlDir . $fileName);
+            $document = new Document($html);
+
+            $productData = [];
+
+            if ($params = $document->first('div#tab-char')) {
+                foreach ($params->find('div.tr') as $paramItem){
+                    if(count($keyValue = ($paramItem->find('div.td'))) === 2){
+                        $productData[$keyValue[0]->text()] = $keyValue[1]->text();
+                    }
+                }
+            }
+
+            $productsData[Str::before($fileName,'.')] = $productData;
+        }
+
+        Storage::put('data/products_params.json', json_encode($productsData,JSON_UNESCAPED_UNICODE));
+        df(tmr(@$this->start),$productsData);
+
+        //$categories = json_decode(Storage::get('data/categories.json'), 1)['categories'];
+        //df(tmr(@$this->start), head($categories),$categories);
+
+        $products = json_decode(Storage::get('data/search.json'), 1)['offers'];
+        $product = array_filter($products, fn($v) => $v['offerCode'] == 246550);
+        df(tmr(@$this->start), $product, head($products), array_slice($products, 1, 20));
+
+        df(tmr(@$this->start), 'parser');
+    }
+
+    public function parseProductHtmls()
+    {
         set_time_limit(300);
         $productsData = [];
         $htmlDir = base_path('common_data/html/');
@@ -27,6 +76,7 @@ class Parser
             $document = new Document($html);
 
             $tmp = [];
+            $productData = [];
 
             foreach ($document->find('.slide>img') as $image) {
                 if ($imgDataId = $image->getAttribute('data-id')) {

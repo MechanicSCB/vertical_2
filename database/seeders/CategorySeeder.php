@@ -16,7 +16,7 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        $categories = json_decode(Storage::get('data/categories.json'), 1)['categories'];
+        $categories = json_decode(file_get_contents(database_path('seeders/src/categories.json')), 1)['categories'];
 
         $maxId = 1;
 

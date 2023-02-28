@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Nodes\GetAncestorsCategoriesFromPath;
+use App\Actions\Nodes\GetBreadcrumbsFromUrl;
+use App\Actions\Nodes\GetCategoryNodeFromPath;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Models\Category;
 use App\Models\Node;
@@ -26,9 +29,10 @@ class CategoryController extends Controller
 
     public function show(string $path): Response|ResponseFactory
     {
-        $ancestorsCategories = $this->getAncestorsCategories($path);
-        $breadcrumbs = $this->getBreadcrumbs($path, $ancestorsCategories);
-        $categoryNode = $this->getCategoryNodeFromPath($path, $ancestorsCategories);
+        $path = "catalog/$path";
+        $ancestorsCategories = (new GetAncestorsCategoriesFromPath())->get($path);
+        $breadcrumbs = (new GetBreadcrumbsFromUrl())->get($path,$ancestorsCategories);
+        $categoryNode = (new GetCategoryNodeFromPath())->get($path, $ancestorsCategories);
         $subCategories = $categoryNode->children->append(['image', 'title', 'url']);
         $productsQuery = $this->getProductsQuery($categoryNode['path']);
         $productsFilteredQuery = $this->getProductsFilteredQuery($productsQuery);
@@ -132,54 +136,6 @@ class CategoryController extends Controller
         $category->delete();
 
         return back()->with('success', __('flash.successfully_deleted'));
-    }
-
-
-    // TODO: replace methods below to other classes?
-    public function getBreadcrumbs(string $path, array $ancestorsCategories): array
-    {
-        $breadcrumbs = [];
-        $url = '/catalog';
-
-        foreach (explode('/', $path) as $slug) {
-            $url .= "/{$ancestorsCategories[$slug]['slug']}";
-
-            $breadcrumbs[] = [
-                'title' => $ancestorsCategories[$slug]['title'],
-                'url' => $url,
-            ];
-        }
-
-        return $breadcrumbs;
-    }
-
-    public function getAncestorsCategories(string $path): array
-    {
-        $ancestorsCategories = Category::query()
-            ->whereIn('slug', explode('/', $path))
-            ->get(['id', 'slug', 'title'])
-            ->toBase()
-            ->keyBy('slug')
-            ->toArray();
-
-        return $ancestorsCategories;
-    }
-
-    public function getCategoryNodeFromPath(string $path, array $ancestorsCategories): Node
-    {
-        $nodePath = '1.';
-
-        foreach (explode('/', $path) as $slug) {
-            $nodePath .= $ancestorsCategories[$slug]['id'] . Node::$separator;
-        }
-
-        $categoryNode = Node::query()
-            ->with('category:id,slug,title') // in order not to take all category fields
-            ->where('path', '=', trim($nodePath, Node::$separator))
-            ->firstOrFail()
-            ->append('title');
-
-        return $categoryNode;
     }
 
 

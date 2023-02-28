@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\NodeController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,7 +19,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/test', [\App\Dev\Parser::class,'run']);
-//Route::get('/seed', [\Database\Seeders\ProductSeeder::class,'run']);
+Route::get('/seed', [\Database\Seeders\ProductSeeder::class,'reverse']);
 
 Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/catalog', [CategoryController::class, 'index'])->name('categories.index');
@@ -33,6 +34,9 @@ Route::get('/tree', [NodeController::class, 'index'])->name('nodes.index');
 Route::post('/nodes/copy/{target_node}/to/{dest_node}', [NodeController::class, 'copy'])->name('nodes.copy');
 Route::post('/nodes/move/{target_node}/to/{dest_node}', [NodeController::class, 'move'])->name('nodes.move');
 Route::delete('/nodes/{node}', [NodeController::class, 'destroy'])->name('nodes.destroy');
+
+// Products
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
 
 // JETSTREAM

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('vendor')->nullable();
             $table->string('model')->nullable();
             $table->string('name');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->integer('price')->nullable();
             $table->integer('old_price')->nullable();
             $table->text('description')->nullable();

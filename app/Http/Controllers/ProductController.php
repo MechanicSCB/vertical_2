@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Nodes\GetAncestorsCategoriesFromPath;
+use App\Actions\Nodes\GetBreadcrumbsFromUrl;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Inertia\Response;
+use Inertia\ResponseFactory;
 
 class ProductController extends Controller
 {
@@ -34,9 +38,18 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(Product $product): Response|ResponseFactory
     {
-        //
+        $nodeUrl = $product->getDefaultNodeUrl();
+        $breadcrumbs = (new GetBreadcrumbsFromUrl())->get($nodeUrl);
+        $breadcrumbs[] = [
+            'title' => $product->name,
+            'url' =>  '/products/' . $product->slug,
+        ];
+
+        $category = $product->category;
+
+        return inertia("Products/Show", compact('product', 'breadcrumbs'));
     }
 
     /**

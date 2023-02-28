@@ -23,8 +23,8 @@ import WhatsupLogo from "../../Svg/WhatsupLogo.vue";
                             <a href="#" target="_blank"><WhatsupLogo class="w-10 h-10" /></a>
                         </div>
                     </div>
-                    <a href="https://clck.yandex.ru/redir/dtype=stred/pid=47/cid=73582/path=dynamic.88x31/*https://market.yandex.ru/shop--vertikal/1247157/reviews">
-                        <img class="footer-market-icon" src="https://clck.yandex.ru/redir/dtype=stred/pid=47/cid=73581/path=dynamic.88x31/*https://grade.market.yandex.ru/?id=1247157&amp;action=image&amp;size=0" alt="Читайте отзывы покупателей и оценивайте качество магазина на Яндекс.Маркете" data-pagespeed-url-hash="3287464701" onload="pagespeed.CriticalImages.checkImageForCriticality(this);" border="0">
+                    <a href="https://market.yandex.ru" target="_blank">
+                        <img src="/images/yandex_market.png" alt="Читайте отзывы покупателей и оценивайте качество магазина на Яндекс.Маркете" border="0">
                     </a>
                 </div>
                 <!-- ABOUT MENU -->

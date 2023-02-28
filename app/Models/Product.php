@@ -10,9 +10,22 @@ class Product extends Model
 {
     use HasFactory;
 
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     // Relations
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function getDefaultNodeUrl(): string
+    {
+        return Node::query()->where('category_id', $this->category->id)->first()->url;
     }
 }

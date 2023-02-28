@@ -27,9 +27,9 @@ let props = defineProps({
             </button>
         </h1>
 
-<!--        <CategoriesGrid :categories="subCategories"/>-->
+        <CategoriesGrid :categories="subCategories"/>
 
-        <div class="flex md:flex-row flex-col gap-8">
+        <div class="mt-10 flex md:flex-row flex-col gap-8">
             <ProductsFilter class="lg:w-1/3 md:w-1/2 w-full" :products="products" :filterData="filterData"/>
             <ProductsGrid class="lg:w-2/3 md:w-1/2 w-full" :products="products"/>
         </div>

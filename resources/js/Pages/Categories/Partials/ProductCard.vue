@@ -22,13 +22,13 @@ let props = defineProps({
         <HeartIcon class="absolute right-5 top-7 fill-ui-text-light hover:fill-ui-link-hover w-10 h-10 hover:w-[42px] hover:[42px] cursor-pointer"/>
 
         <!-- IMAGE/TITLE LINK -->
-        <Link :href="'/products/'+product.id" class="product-link flex flex-col">
+        <Link :href="'/products/'+product.slug" class="product-link flex flex-col">
             <img class="mx-auto h-full md:opacity-75 transition-all" :src="'/storage/images/products/s220/'+product.code+'.jpg'">
             <h3 class="mx-4 text-lg font-bold hover:text-ui-link-hover transition-all">{{ product.name }}</h3>
         </Link>
 
         <!-- PRICE -->
-        <h2 class="mt-12 mx-4 text-[40px] w-full text-center font-semibold mb-6">{{ product.price }} ₽</h2>
+        <h2 class="mt-12 mx-4 text-[40px] w-full text-center font-semibold mb-6">{{ product.price.toLocaleString() }} ₽</h2>
 
 
         <div class="text-ui-text-secondary flex flex-col">
@@ -43,7 +43,7 @@ let props = defineProps({
                         <button @click="product.quantity++" class="mb-2 text-[40px] text-ui-text-primary hover:text-ui-link-hover">+</button>
                     </div>
                     <div class="mt-2 -mb-1">В наличии: <strong class="font-semibold text-ui-text-accent">{{ product.availability }}</strong></div>
-                    <div v-if="product.quantity > 1"><span>На сумму </span><span class="font-semibold">{{ product.price * product.quantity }} ₽</span></div>
+                    <div v-if="product.quantity > 1"><span>На сумму </span><span class="font-semibold">{{ (product.price * product.quantity).toLocaleString() }} ₽</span></div>
                 </div>
                 <!-- add to cart -->
                 <button class="add-to-cart h-[60px] w-32 bg-ui-body text-ui-text-secondary hover:bg-ui-accent hover:text-ui-text-accent_inverse border-[3px] hover:border-ui-text-accent border-ui-text-secondary text-sm font-semibold rounded-[30px]">
