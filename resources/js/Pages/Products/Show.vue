@@ -26,19 +26,19 @@ let props = defineProps({
         >
     </div>
 
-    <div class="mt-24 mx-auto px-9 max-w-[1656px]">
+    <div class="mt-6 mx-auto px-9 max-w-[1656px]">
         <!--  IMAGE/BUY CARD  -->
         <div class="mt-10 flex md:flex-row flex-col gap-8">
             <!--  LEFT  -->
             <div class="xl:w-1/3 md:w-1/2 w-full">
                 <!-- IMAGE CARD -->
-                <div class="relative border rounded-3xl overflow-hidden">
+                <div class="relative border rounded-3xl overflow-hidden h-[510px] flex items-center">
                     <!-- FAVORITE -->
                     <HeartIcon
                         class="absolute right-5 top-4 fill-ui-text-light hover:fill-ui-link-hover w-10 h-10 hover:w-[42px] hover:[42px] cursor-pointer"/>
 
                     <!-- IMAGE -->
-                    <div class="product-link flex flex-col">
+                    <div class="px-2 product-link max-h-full flex flex-col">
                         <img @click="showModalImg = true" class="mx-auto h-full cursor-pointer"
                              :src="'/storage/images/products/orig/'+product.code+'.jpg'">
                     </div>

@@ -68,10 +68,13 @@ class Node extends Model
         $imagePath = "/storage/images/categories/{$this->category->id}.jpg";
 
         if (! Storage::exists(str_replace('/storage/', '/public/', $imagePath))) {
+            $imagePath = "/storage/images/categories/1572.jpg";
+
+            // TODO slow! must be removed!
             $product = Product::query()->where('category_id', $this->category->id)->first(['code']);
 
-            if($product=== null){
-                $imagePath = "/storage/images/categories/1572.jpg";
+            if($product === null){
+                $imagePath = $this->children->first()->image ?? "/storage/images/categories/1572.jpg";
             }else{
                 $imagePath = "/storage/images/products/s220/{$product['code']}.jpg";
             }

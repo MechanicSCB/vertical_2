@@ -5,11 +5,11 @@ let props = defineProps({
 </script>
 
 <template>
-    <Link :href="category.url" class="border hover:border-ui-border-hover rounded-3xl bg-ui-section overflow-hidden pb-6 flex flex-col cursor-pointer">
+    <Link :href="category.url" class="border h-full hover:border-ui-border-hover rounded-3xl bg-ui-section overflow-hidden pb-6 flex flex-col cursor-pointer">
         <div class="mx-auto mb-4 lg:h-[219px] md:h-36 h-28">
              <img class="max-h-full" :src="category.image" :alt="category.slug">
         </div>
-        <h3 class="mx-4 text-[14px] font-bold h-8 ">{{ category.title }}({{category.category.id}})</h3>
+        <h3 class="mx-4 text-[14px] font-bold h-fit">{{ category.title }}</h3>
     </Link>
 </template>
 <style scoped>

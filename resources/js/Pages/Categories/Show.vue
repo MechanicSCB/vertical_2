@@ -1,9 +1,11 @@
 <script setup>
-import CategoriesGrid from "./Partials/CategoriesGrid.vue";
-import ProductsGrid from "./Partials/ProductsGrid.vue";
+// TODO fix page max in Vue (если, текущая страница больше максимальной, сбросить на последнюю или первую)
+
 import Breadcrumbs from "../../Layouts/Partials/Breadcrumbs.vue";
 import {router} from "@inertiajs/vue3";
+import CategoriesGrid from "./Partials/CategoriesGrid.vue";
 import ProductsFilter from "./Partials/ProductsFilter.vue";
+import ProductsGrid from "./Partials/ProductsGrid.vue";
 
 let props = defineProps({
     categoryNode:Object,
@@ -30,8 +32,8 @@ let props = defineProps({
         <CategoriesGrid :categories="subCategories"/>
 
         <div class="mt-10 flex md:flex-row flex-col gap-8">
-            <ProductsFilter class="lg:w-1/3 md:w-1/2 w-full" :products="products" :filterData="filterData"/>
-            <ProductsGrid class="lg:w-2/3 md:w-1/2 w-full" :products="products"/>
+            <ProductsFilter class="2xl:w-1/4 xl:w-1/3 md:w-1/2 w-full" :productsTotal="products.total" :filterData="filterData"/>
+            <ProductsGrid class="2xl:w-3/4 xl:w-2/3 md:w-1/2 w-full" :products="products"/>
         </div>
     </div>
 </template>

@@ -5,15 +5,10 @@ namespace App\Http\Controllers;
 use App\Actions\Nodes\GetAncestorsCategoriesFromPath;
 use App\Actions\Nodes\GetBreadcrumbsFromUrl;
 use App\Actions\Nodes\GetCategoryNodeFromPath;
-use App\Http\Requests\StoreCategoryRequest;
 use App\Models\Category;
 use App\Models\Node;
-use App\Models\Product;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Inertia\Response;
 use Inertia\ResponseFactory;
@@ -31,17 +26,17 @@ class CategoryController extends Controller
     {
         $path = "catalog/$path";
         $ancestorsCategories = (new GetAncestorsCategoriesFromPath())->get($path);
-        $breadcrumbs = (new GetBreadcrumbsFromUrl())->get($path,$ancestorsCategories);
+        $breadcrumbs = (new GetBreadcrumbsFromUrl())->get($path, $ancestorsCategories);
         $categoryNode = (new GetCategoryNodeFromPath())->get($path, $ancestorsCategories);
         $subCategories = $categoryNode->children->append(['image', 'title', 'url']);
         $productsQuery = $this->getProductsQuery($categoryNode['path']);
-        $productsFilteredQuery = $this->getProductsFilteredQuery($productsQuery);
-        $filterData = $this->getFilterData(clone($productsFilteredQuery));
-        $products = $productsFilteredQuery->paginate()->onEachSide(1)->withQueryString();
-        // TODO fix page max in Vue (если, текущая страница больше максимальной, сбросить на последнюю или первую)
-        //df(tmr(@$this->start), $filterData,$products);
+        $filterData = $this->getFilterData(clone($productsQuery));
+        $productsFilteredQuery = $this->getProductsFilteredQuery($productsQuery, $filterData);
+        $products = $productsFilteredQuery
+            ->select(['id', 'code', 'price', 'slug', 'name', 'availability'])
+            ->paginate()->onEachSide(1)->withQueryString();
 
-        return inertia('Categories/Show', compact('breadcrumbs', 'categoryNode', 'subCategories','filterData', 'products'));
+        return inertia('Categories/Show', compact('breadcrumbs', 'categoryNode', 'subCategories', 'filterData', 'products'));
     }
 
     public function getProductsQuery(string $categoryNodePath): Builder
@@ -56,9 +51,50 @@ class CategoryController extends Controller
         return $productsQuery;
     }
 
-    public function getProductsFilteredQuery(Builder $productsQuery): Builder
+    public function getFilterData(Builder $productsQuery): array
+    {
+        $filterData['form'] = request()->all();
+        $filterData['sort_options'] = config('filter.sort_options');
+        $filterData['minPrice'] = (clone($productsQuery))->orderBy('price')->first('price')->price;
+        $filterData['maxPrice'] = (clone($productsQuery))->orderByDesc('price')->first('price')->price;
+        $filterData['vendors'] = (clone($productsQuery))->distinct()->orderBy('vendor')->pluck('vendor')->filter()->values();
+
+        $allParams = (clone($productsQuery))->pluck('params')->toArray();
+        $filterData['params'] = [];
+
+        foreach ($allParams as $productParams) {
+            $productParams = json_decode($productParams, 1);
+
+            foreach ($productParams as $param => $value) {
+                $filterData['params'][$param][$value] = $value;
+            }
+        }
+
+        $filterData['params'] = array_map('array_values', $filterData['params']);
+
+        // TODO sort the parameters by importance and change the condition for limiting the number of parameters
+        if (count($filterData['params']) > 20) {
+            $mainParamKeys = ['Бренд', 'Тип товара', 'Серия'];
+            $filterData['params'] = array_filter($filterData['params'],
+                fn($v, $k) => count($v) > 15
+                    || in_array($k, $mainParamKeys), ARRAY_FILTER_USE_BOTH);
+        }
+
+        return $filterData;
+    }
+
+    public function getProductsFilteredQuery(Builder $productsQuery, array $filterData): Builder
     {
         $filter = request()->all();
+
+        if (isset($filter['sortBy'])) {
+            $column = @$filterData['sort_options'][$filter['sortBy']]['column'];
+            $direction = @$filterData['sort_options'][$filter['sortBy']]['direction'];
+
+            if($column && $direction){
+                $productsQuery->orderBy($column, $direction);
+            }
+        }
 
         if (isset($filter['priceFrom'])) {
             $productsQuery->where('price', '>=', $filter['priceFrom']);
@@ -68,16 +104,34 @@ class CategoryController extends Controller
             $productsQuery->where('price', '<=', $filter['priceTo']);
         }
 
+        foreach ($filter['params'] ?? [] as $paramName => $values) {
+            // Validation query paramName
+            if (! isset($filterData['params'][$paramName])) {
+                break;
+            }
+
+            // Validation query paramValues
+            $paramValues = [];
+
+            foreach ($values as $value) {
+                if (! in_array($value, $filterData['params'][$paramName] ?? [])) {
+                    continue;
+                }
+
+                $paramValues[] = "'$value'";
+            }
+
+            $productsQuery->whereRaw("params->>'" . $paramName . "' in (" . implode(",", $paramValues) . ")");
+        }
+
         return $productsQuery;
     }
 
-    public function getFilterData(Builder $productsQuery)
+    public function destroy(Category $category): RedirectResponse
     {
-        $filterData['minPrice']  = (clone($productsQuery))->orderBy('price')->first('price')->price;
-        $filterData['maxPrice']  = (clone($productsQuery))->orderByDesc('price')->first('price')->price;
-        $filterData['vendors']  = (clone($productsQuery))->distinct()->orderBy('vendor')->pluck('vendor')->filter()->values();
+        $category->delete();
 
-        return $filterData;
+        return back()->with('success', __('flash.successfully_deleted'));
     }
 
     //public function create(): Response|ResponseFactory
@@ -130,13 +184,4 @@ class CategoryController extends Controller
     //
     //    return back()->with('success', __('flash.successfully_saved'));
     //}
-
-    public function destroy(Category $category): RedirectResponse
-    {
-        $category->delete();
-
-        return back()->with('success', __('flash.successfully_deleted'));
-    }
-
-
 }

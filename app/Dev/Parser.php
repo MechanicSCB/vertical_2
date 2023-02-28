@@ -6,6 +6,7 @@ namespace App\Dev;
 
 use App\Models\Product;
 use DiDom\Document;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -13,14 +14,14 @@ class Parser
 {
     public function run()
     {
-        $products = Product::query()
-            ->toBase()
-            ->get(['id','slug'])
-            ->groupBy('slug')
-            ->filter(fn($v) => count($v) > 1)
+        $res = Product::query()
+            ->selectRaw('jsonb_object_keys(params)')
+            ->distinct()
+            ->pluck('jsonb_object_keys')
+            ->toArray()
         ;
 
-        df(tmr(@$this->start), $products);
+        df(tmr(@$this->start),$res);
     }
 
     public function parseProductParams()
