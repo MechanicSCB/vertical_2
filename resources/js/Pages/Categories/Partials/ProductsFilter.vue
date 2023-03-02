@@ -77,7 +77,7 @@ function submit() {
             <!-- PRICE FILTER -->
             <div class="mt-6">
                 <div class="text-lg">Цена</div>
-                <!-- https://refreshless.com/nouislider/ -->
+                <!-- noUiSlider   https://refreshless.com/nouislider/ -->
                 <div id="slider" class="my-9 h-1 bg-ui-accent"></div>
                 <div class="flex gap-8">
                     <input @change="changePriceInput" v-model="form.priceFrom" :placeholder="filterData.minPrice"

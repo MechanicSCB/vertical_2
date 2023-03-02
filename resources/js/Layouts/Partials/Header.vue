@@ -6,7 +6,7 @@ import HeartIcon from "../../Svg/HeartIcon.vue";
 import CartIcon from "../../Svg/CartIcon.vue";
 import MagnifyIcon from "../../Svg/MagnifyIcon.vue";
 import PhoneIcon from "../../Svg/PhoneIcon.vue";
-
+import HeaderCartLink from "./HeaderCartLink.vue";
 </script>
 <template>
     <!--    chock    -->
@@ -17,24 +17,17 @@ import PhoneIcon from "../../Svg/PhoneIcon.vue";
             <Link href="#">
                 <HeartIcon class="fill-ui-text-accent xs:w-10 w-8"/>
             </Link>
-            <div class="flex items-center">
-                <Link href="/tree">
-                    <CartIcon class="fill-ui-text-accent xs:w-10 w-8"/>
-                </Link>
-                <div class="ml-2 border w-6 h-6 text-center rounded-full flex items-center justify-center">
-                    <div class="mb-0.5 mr-0.5 text-ui-text-secondary">1</div>
-                </div>
-            </div>
+            <HeaderCartLink/>
         </div>
         <Link href="/" class="center_header mr-20">
             <LogoMin class="block md:hidden"/>
             <LogoFull class="hidden md:block"/>
         </Link>
         <div class="right_header flex xs:gap-6 gap-2">
-            <Link href="/categories/create">
+            <Link href="/tree">
                 <MagnifyIcon class="fill-ui-text-secondary"/>
             </Link>
-            <Link :href="route('categories.edit',8)">
+            <Link href="">
                 <PhoneIcon class="fill-ui-text-accent"/>
             </Link>
         </div>

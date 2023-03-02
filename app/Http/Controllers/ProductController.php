@@ -12,6 +12,21 @@ use Inertia\ResponseFactory;
 class ProductController extends Controller
 {
     /**
+     * Display the specified resource.
+     */
+    public function show(Product $product): Response|ResponseFactory
+    {
+        $nodeUrl = $product->getDefaultNodeUrl();
+        $breadcrumbs = (new GetBreadcrumbsFromUrl())->get($nodeUrl);
+        $breadcrumbs[] = [
+            'title' => $product->name,
+            'url' =>  '/products/' . $product->slug,
+        ];
+
+        return inertia("Products/Show", compact('product', 'breadcrumbs'));
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -33,23 +48,6 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product): Response|ResponseFactory
-    {
-        $nodeUrl = $product->getDefaultNodeUrl();
-        $breadcrumbs = (new GetBreadcrumbsFromUrl())->get($nodeUrl);
-        $breadcrumbs[] = [
-            'title' => $product->name,
-            'url' =>  '/products/' . $product->slug,
-        ];
-
-        $category = $product->category;
-
-        return inertia("Products/Show", compact('product', 'breadcrumbs'));
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\NodeController;
 use App\Http\Controllers\ProductController;
@@ -18,7 +19,8 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/test', [\App\Dev\Parser::class,'run']);
+//Route::get('/test', [\App\Dev\Parser::class,'run']);
+Route::get('/test', [\App\Dev\ImageHandler::class,'test']);
 Route::get('/seed', [\Database\Seeders\ProductSeeder::class,'reverse']);
 
 Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
@@ -37,6 +39,9 @@ Route::delete('/nodes/{node}', [NodeController::class, 'destroy'])->name('nodes.
 
 // Products
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+
+// Cart
+Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
 
 
 // JETSTREAM

@@ -1,6 +1,6 @@
 <template>
-    <svg class="cursor-arrow-icon" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-        <svg class="click-effect" xmlns="http://www.w3.org/2000/svg" x="0" y="0">
+    <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <svg  class="group-hover:block hidden" xmlns="http://www.w3.org/2000/svg" x="0" y="0">
             <path d="M6 3.75A.75.75 0 015.25 3V.75a.75.75 0 011.5 0V3a.75.75 0 01-.75.75zM3.66 4.41a.75.75 0 01-.533-.217l-1.59-1.598a.75.75 0 011.058-1.057l1.597 1.59A.75.75 0 013.66 4.41zM3 6.75H.75a.75.75 0 010-1.5H3a.75.75 0 010 1.5zM2.07 10.68a.75.75 0 01-.533-.18.75.75 0 010-1.057l1.59-1.598A.753.753 0 014.192 8.91L2.595 10.5a.75.75 0 01-.525.18zM8.34 4.41a.75.75 0 01-.533-1.282l1.598-1.59A.761.761 0 1110.5 2.595L8.872 4.193a.75.75 0 01-.532.217z"/>
         </svg>
         <svg xmlns="http://www.w3.org/2000/svg" x="5" y="5">

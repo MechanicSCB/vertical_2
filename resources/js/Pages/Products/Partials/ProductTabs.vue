@@ -13,6 +13,7 @@ provide('activeTab', activeTab)
     <!-- PRODUCT TABS  -->
     <div class="mt-20">
         <!-- BOOKMARKS  -->
+        <!-- TODO: Fix min screen width overflow -->
         <ul class="flex text-[23px] font-semibold gap-x-7">
             <TabBookmark tabName="description">Описание</TabBookmark>
             <TabBookmark tabName="params">Характеристики</TabBookmark>
