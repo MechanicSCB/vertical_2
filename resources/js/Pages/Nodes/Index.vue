@@ -6,10 +6,10 @@ let props = defineProps({
     tree:Object,
 });
 
-let copyMode = ref(false);
+let moveMode = ref('move');
 let openedNodes = ref( JSON.parse(sessionStorage.getItem('openedNodes')) ?? [1]);
 
-provide('copyMode', copyMode)
+provide('moveMode', moveMode)
 provide('openedNodes', openedNodes)
 
 
@@ -20,11 +20,11 @@ provide('openedNodes', openedNodes)
             Каталог товаров
         </h1>
         <div>
-            <button class="px-2 pb-1 text-white rounded"
-                    :class="copyMode ?'bg-ui-accent':'bg-ui-secondary'"
-                    @click="copyMode = !copyMode">
-                {{copyMode ? 'copy' : 'move'}}
-            </button>
+            <select v-model="moveMode" class="rounded-3xl mb-4">
+                <option>move</option>
+                <option>copy</option>
+                <option>reorder</option>
+            </select>
         </div>
 
         <Nodes :parent="tree"/>

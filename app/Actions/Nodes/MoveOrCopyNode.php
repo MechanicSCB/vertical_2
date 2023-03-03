@@ -44,7 +44,7 @@ class MoveOrCopyNode
             return ['type' => 'error', 'body' => __('flash.this_category_node_already_exist_in_destination_node')];
         }
 
-        $keys = $isCopyMode ? ['parent_path', 'path', 'category_id'] : ['id', 'parent_path', 'path', 'category_id'];
+        $keys = $isCopyMode ? ['parent_path', 'path', 'category_id', 'order'] : ['id', 'parent_path', 'path', 'category_id'];
 
         // Get target descendants if they exist as array of arrays with selected fields
         $targetDescendants = stdToArray(DB::table('nodes')

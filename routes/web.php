@@ -21,7 +21,7 @@ use Inertia\Inertia;
 
 //Route::get('/test', [\App\Dev\Parser::class,'run']);
 Route::get('/test', [\App\Dev\ImageHandler::class,'test']);
-Route::get('/seed', [\Database\Seeders\ProductSeeder::class,'reverse']);
+Route::get('/seed', [\Database\Seeders\NodeSeeder::class,'run']);
 
 Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/catalog', [CategoryController::class, 'index'])->name('categories.index');
@@ -32,9 +32,11 @@ Route::get('/categories/edit/{category}', [CategoryController::class, 'edit'])->
 //Route::patch('/categories/{category}',[CategoryController::class, 'update'])->name('categories.update');
 Route::delete('/categories/{category}',[CategoryController::class, 'destroy'])->name('categories.destroy');
 
+// TODO: add admin middleware
 Route::get('/tree', [NodeController::class, 'index'])->name('nodes.index');
 Route::post('/nodes/copy/{target_node}/to/{dest_node}', [NodeController::class, 'copy'])->name('nodes.copy');
 Route::post('/nodes/move/{target_node}/to/{dest_node}', [NodeController::class, 'move'])->name('nodes.move');
+Route::post('/nodes/reorder/{target_node}/to/{dest_node}', [NodeController::class, 'reorder'])->name('nodes.reorder');
 Route::delete('/nodes/{node}', [NodeController::class, 'destroy'])->name('nodes.destroy');
 
 // Products

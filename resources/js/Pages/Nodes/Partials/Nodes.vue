@@ -3,10 +3,20 @@ import Node from "./Node.vue";
 import {router} from "@inertiajs/vue3";
 import {ref, inject} from "vue";
 
-let copyMode = inject('copyMode');
+let moveMode = inject('moveMode');
 let openedNodes = inject('openedNodes');
 
 let props = defineProps({parent: Object});
+
+function getSortedNodes(){
+    let arr = [];
+
+    for (let key of Object.keys(props.parent.nodes ?? [])){
+        arr.push(props.parent.nodes[key])
+    }
+
+    return arr.sort((a,b) => a['order'] - b['order'])
+}
 
 function dragStart(event, draggedNodeId) {
     event.dataTransfer.setData("draggedNodeId", draggedNodeId); //event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setDragImage(ev.target,100,100); return true;
@@ -21,10 +31,12 @@ function dragOver(event, el) {/* ev.preventDefault();*/
 function dragDrop(event, destNodeId) {
     var draggedNodeId = event.dataTransfer.getData("draggedNodeId");
 
-    if (copyMode.value === true) {
-        router.post(route('nodes.copy', [draggedNodeId, destNodeId]))
-    } else {
+    if (moveMode.value === 'move') {
         router.post(route('nodes.move', [draggedNodeId, destNodeId]))
+    } else if (moveMode.value === 'copy') {
+        router.post(route('nodes.copy', [draggedNodeId, destNodeId]))
+    } else if (moveMode.value === 'reorder') {
+        router.post(route('nodes.reorder', [draggedNodeId, destNodeId]))
     }
 }
 
@@ -41,7 +53,7 @@ function toggle(node) {
 </script>
 <template>
     <div class="flex flex-col w-full">
-        <div v-for="node in parent.nodes" class="">
+        <div v-for="node in getSortedNodes()" class="">
             <div class="flex gap-1">
                 <div @click="toggle(node)" class="cursor-pointer" draggable="true"
                      @dragenter.prevent="dragEnter($event, $el)"

@@ -20,6 +20,8 @@ class NodeSeeder extends Seeder
         $nodes = [];
         $sep = Node::$separator;
 
+        $orders = [];
+
         foreach ($this->categories as $category) {
             $parentPath = Str::beforeLast($this->getCategoryPath($category), $sep);
             $parentPath = trim($parentPath, $sep);
@@ -31,10 +33,13 @@ class NodeSeeder extends Seeder
             $path = $parentPath.$sep.$category['id'];
             $path = trim($path, $sep);
 
+            $orders[$parentPath] = @$orders[$parentPath] + 1;
+
             $nodes[] = [
                 'path' => $path,
                 'parent_path' => $parentPath,
                 'category_id' => $category['id'],
+                'order' => $orders[$parentPath],
             ];
         }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Nodes\MoveOrCopyNode;
+use App\Actions\Nodes\ReorderNode;
 use App\Classes\TreeHandler;
 use App\Models\Node;
 use Illuminate\Http\RedirectResponse;
@@ -40,6 +41,14 @@ class NodeController extends Controller
         $actionResultMsg = (new MoveOrCopyNode())->moveOrCopyNode($targetNode, $destNode, false);
 
         return back()->with($actionResultMsg['type'], $actionResultMsg['body']);
+    }
+
+    public function reorder(Node $targetNode, Node $destNode): RedirectResponse
+    {
+        $actionResultMsg = (new ReorderNode())->reorder($targetNode, $destNode['order']);
+
+        return back()->with($actionResultMsg['type'], $actionResultMsg['body']);
+        //return redirect('/catalog/sad-i-ogorod/')->with($actionResultMsg['type'], $actionResultMsg['body']);
     }
 
     public function destroy(Node $node): RedirectResponse

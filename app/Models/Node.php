@@ -29,7 +29,10 @@ class Node extends Model
             ->with('category:id,slug,title')
             ->where('parent_path','=', $path)
             ->orderBy('order')
-            ->get(['path','parent_path','category_id'])
+            ->get(['id','path','parent_path','category_id',
+                   // TODO temp
+                   'order',
+                ])
         ;
 
         return Attribute::make(
