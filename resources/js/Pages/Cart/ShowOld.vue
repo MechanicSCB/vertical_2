@@ -2,45 +2,14 @@
 import TrashIcon from "../../Svg/TrashIcon.vue";
 import BoxIcon from "../../Svg/BoxIcon.vue";
 import CursorArrowClickedIcon from "../../Svg/CursorArrowClickedIcon.vue";
-import {cart, clearCart, removeItemFromCart, addToCart, incrementProductQuantity, decrementProductQuantity, getCart,getCookie, updateCartFromCookie} from "../../Stores/cartStore.js";
-import ProductCard from "../Categories/Partials/ProductCard.vue";
-import {reactive} from "vue";
 
-let props = defineProps({cartProducts: Object, relatedProducts:Object});
-// TODO: перед каждым изменением корзины обновлять содержимое из куки
-// let cart = reactive(getCart());
-
-function getCartProducts(){
-    // cart = getCart();
-    // updateCartFromCookie();
-
-    let products = [];
-
-    for (let productId of Object.keys(cart)){
-        let product = props.cartProducts[productId] ?? props.relatedProducts[productId];
-
-        if(typeof product === 'undefined'){
-            delete cart[productId];
-            continue;
-        }
-
-        product.quantity = cart[productId];
-
-        products.push(product)
-    }
-
-    return products;
-}
+let props = defineProps({products: Object});
 
 function getOrderSum() {
     let orderSum = 0;
 
-    for (let productId of Object.keys(cart)){
-        let product = props.cartProducts[productId] ?? props.relatedProducts[productId];
-
-        product.quantity = cart[productId];
-
-        orderSum += product.price * cart[productId];
+    for (let productId of Object.keys(props.products)) {
+        orderSum += props.products[productId].price * props.products[productId].quantity;
     }
 
     return orderSum;
@@ -49,21 +18,57 @@ function getOrderSum() {
 function getDiscount() {
     return 0.95;
 }
+
+function incrementQuantity(product) {
+    product.quantity++;
+    updateCookie();
+}
+
+function decrementQuantity(product) {
+    product.quantity--;
+    updateCookie();
+}
+
+function removeItemFromCart(productId) {
+    delete props.products[productId];
+    updateCookie();
+}
+
+function clearCart() {
+    for (let productId of Object.keys(props.products)) {
+        delete props.products[productId];
+    }
+
+    updateCookie();
+}
+
+function updateCookie() {
+    let cart = {};
+
+    for (let productId of Object.keys(props.products)) {
+        cart[productId] = props.products[productId].quantity;
+    }
+
+    setCookie('cart', JSON.stringify(cart), 7);
+}
+
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/;SameSite=Lax";
+}
 </script>
 
 <template>
     <div class="mx-auto px-9 max-w-[1656px]">
-        <div class="1hidden mt-3 flex gap-2">
-            <button class="w-10 h-10" v-for="relatedProduct in relatedProducts" @click="addToCart(relatedProduct.id)">
-                <img class="mx-auto max-w-full max-h-full" :src="'/storage/images/products/s220/'+relatedProduct.code+'.jpg'"/>
-            </button>
-        </div>
-
         <!-- SHOW CART ITEMS -->
-        <div v-if="Object.keys(cart).length">
+        <div v-if="Object.keys(products).length">
             <div class="my-12 flex justify-between">
                 <h1 class="text-3xl font-semibold">Моя корзина</h1>
-
                 <!-- Clear cart -->
                 <button @click="clearCart" class="flex items-center gap-3 group">
                     <TrashIcon class="fill-ui-text-secondary w-6 group-hover:fill-ui-text-accent"/>
@@ -84,7 +89,7 @@ function getDiscount() {
                         <span class="text-center">Кол-во</span>
                         <span class="text-center">Итого</span>
                     </div>
-                    <div v-for="product in getCartProducts()" class="py-3 grid grid-cols-5 border-t items-center">
+                    <div v-for="product in products" class="py-3 grid grid-cols-5 border-t items-center">
                         <Link :href="route('products.show', product.slug)"
                               class="group col-span-2 grid-cols-2 grid grid-cols-2">
                             <div class="ml-4 w-[82px] h-[82px]">
@@ -103,12 +108,12 @@ function getDiscount() {
                             <!-- quantity -->
                             <div
                                 class="px-5 flex border w-fit h-[43px] rounded-full items-center justify-between text-3xl">
-                                <button @click="decrementProductQuantity(product.id)"
+                                <button @click="decrementQuantity(product)"
                                         class="mb-3 text-[40px] mr-1 text-ui-text-primary hover:text-ui-link-hover">-
                                 </button>
                                 <div class="mx-3 text-center">{{ product.quantity ??= 1 }}</div>
                                 <!-- <input type="text" name="quantity" class="" :value="product.quantity ??= 1">-->
-                                <button @click="incrementProductQuantity(product.id)"
+                                <button @click="incrementQuantity(product)"
                                         class="mb-2 text-[40px] text-ui-text-primary hover:text-ui-link-hover">+
                                 </button>
                             </div>
@@ -124,7 +129,7 @@ function getDiscount() {
 
                 <!-- Place An Order -->
                 <div class="pt-10 mx-auto max-w-[560px] px-7 border rounded-3xl pb-5 w-full xl:w-1/3 2xl:w-1/4">
-                    <div class="text-xl font-semibold">{{ cart.length }} товара</div>
+                    <div class="text-xl font-semibold">{{ products.length }} товара</div>
                     <!-- Price Rows -->
                     <div class="mt-6 font-semibold">
                         <div class="flex justify-between border-b border-ui-text-primary pb-4">
@@ -180,11 +185,5 @@ function getDiscount() {
                 </Link>
             </div>
         </div>
-
-        <!-- TEST ADD TO CART -->
-        <div class="mt-10 grid grid-cols-3 gap-2">
-            <ProductCard v-for="relatedProduct in relatedProducts" :product="relatedProduct"/>
-        </div>
-
     </div>
 </template>

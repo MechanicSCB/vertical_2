@@ -1,11 +1,40 @@
 <script setup>
 import HeartIcon from "../../../Svg/HeartIcon.vue";
 import CursorArrowClickedIcon from "../../../Svg/CursorArrowClickedIcon.vue";
-import {cart, addToCart} from "../../../Stores/cartStore.js";
 
 let props = defineProps({
     product: Object,
 });
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+
+    document.cookie = name + "=" + (value || "") + expires + "; path=/;SameSite=Lax";
+}
+
+function addToCart() {
+    let cart = {};
+
+    if(typeof getCookie('cart') !== "undefined"){
+        cart = JSON.parse(getCookie('cart'));
+    }
+
+    cart[props.product.id] ??= 0;
+    cart[props.product.id] += props.product.quantity ?? 1;
+
+    setCookie('cart', JSON.stringify(cart), 7);
+}
 </script>
 
 <template>
@@ -19,7 +48,8 @@ let props = defineProps({
         </div>
 
         <!-- FAVORITE -->
-        <HeartIcon class="absolute z-10 right-5 top-7 fill-ui-text-light hover:fill-ui-link-hover w-10 h-10 hover:w-[42px] hover:[42px] cursor-pointer"/>
+        <HeartIcon
+            class="absolute right-5 top-7 fill-ui-text-light hover:fill-ui-link-hover w-10 h-10 hover:w-[42px] hover:[42px] cursor-pointer"/>
 
         <!-- IMAGE/TITLE LINK -->
         <Link :href="'/products/'+product.slug" class="product-link pt-2 flex flex-col">
@@ -53,7 +83,7 @@ let props = defineProps({
                         class="font-semibold">{{ (product.price * product.quantity).toLocaleString() }} ₽</span></div>
                 </div>
                 <!-- add to cart -->
-                <button @click="addToCart(product.id, product.quantity)"
+                <button @click="addToCart"
                         class="add-to-cart h-[60px] w-32 bg-ui-body text-ui-text-secondary hover:bg-ui-accent hover:text-ui-text-accent_inverse border-[3px] hover:border-ui-text-accent border-ui-text-secondary text-sm font-semibold rounded-[30px]">
                     В корзину
                 </button>

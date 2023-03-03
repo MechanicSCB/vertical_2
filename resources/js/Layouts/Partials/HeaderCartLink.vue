@@ -1,14 +1,6 @@
 <script setup>
 import CartIcon from "../../Svg/CartIcon.vue";
-
-// TODO extract cart object
-let cart = JSON.parse(getCookie('cart'));
-
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
+import {cart} from "../../Stores/cartStore.js";
 </script>
 <template>
     <div class="flex items-center">
