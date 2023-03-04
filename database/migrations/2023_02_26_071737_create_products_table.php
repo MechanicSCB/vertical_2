@@ -31,6 +31,10 @@ return new class extends Migration
             $table->float('order')->nullable();
 
             $table->timestamps();
+
+            $table->fullText('description')->language('russian');
+            $table->fullText('name')->language('russian');
+            $table->fullText('params')->language('russian');
         });
     }
 

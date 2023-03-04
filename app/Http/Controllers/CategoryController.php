@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Node;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Response;
 use Inertia\ResponseFactory;
@@ -24,19 +25,25 @@ class CategoryController extends Controller
 
     public function show(string $path): Response|ResponseFactory
     {
+        // TODO check category ids integrity
         $path = "catalog/$path";
         $ancestorsCategories = (new GetAncestorsCategoriesFromPath())->get($path);
         $breadcrumbs = (new GetBreadcrumbsFromUrl())->get($path, $ancestorsCategories);
         $categoryNode = (new GetCategoryNodeFromPath())->get($path, $ancestorsCategories);
         $subCategories = $categoryNode->children->append(['image', 'title', 'url']);
         $productsQuery = $this->getProductsQuery($categoryNode['path']);
-        $filterData = $this->getFilterData(clone($productsQuery));
+        //Cache::forget("{$categoryNode['path']}_filterData");
+        $filterData = Cache::rememberForever("{$categoryNode['path']}_filterData", fn() => $this->getFilterData(clone($productsQuery)));
+        $filterData['form'] = request()->all();
         $productsFilteredQuery = $this->getProductsFilteredQuery($productsQuery, $filterData);
         $products = $productsFilteredQuery
             ->select(['id', 'code', 'price', 'slug', 'name', 'availability'])
-            ->paginate()->onEachSide(1)->withQueryString();
+            ->paginate(34)->onEachSide(1)->withQueryString();
+        //df(tmr(@$this->start), $categoryNode);
 
-        return inertia('Categories/Show', compact('breadcrumbs', 'categoryNode', 'subCategories', 'filterData', 'products'));
+        $time = str_replace('time = ', '', tmr());
+
+        return inertia('Categories/Show', compact('breadcrumbs', 'categoryNode', 'subCategories', 'filterData', 'products', 'time'));
     }
 
     public function getProductsQuery(string $categoryNodePath): Builder
@@ -53,10 +60,10 @@ class CategoryController extends Controller
 
     public function getFilterData(Builder $productsQuery): array
     {
-        $filterData['form'] = request()->all();
+        // TODO deactivate unavailable options after applying the filter
         $filterData['sort_options'] = config('filter.sort_options');
-        $filterData['minPrice'] = (clone($productsQuery))->orderBy('price')->first('price')->price;
-        $filterData['maxPrice'] = (clone($productsQuery))->orderByDesc('price')->first('price')->price;
+        $filterData['minPrice'] = (clone($productsQuery))->orderBy('price')->first('price')?->price ?? 0;
+        $filterData['maxPrice'] = (clone($productsQuery))->orderByDesc('price')->first('price')?->price ?? 0;
         $filterData['vendors'] = (clone($productsQuery))->distinct()->orderBy('vendor')->pluck('vendor')->filter()->values();
 
         $allParams = (clone($productsQuery))->pluck('params')->toArray();
@@ -91,9 +98,19 @@ class CategoryController extends Controller
             $column = @$filterData['sort_options'][$filter['sortBy']]['column'];
             $direction = @$filterData['sort_options'][$filter['sortBy']]['direction'];
 
-            if($column && $direction){
+            if ($column && $direction) {
                 $productsQuery->orderBy($column, $direction);
             }
+        }
+
+        if (isset($filter['search'])) {
+            $searchStr = $filter['search'];
+
+            $productsQuery->where(fn(Builder $q) => $q
+                ->WhereFullText('description', $searchStr, ['language' => 'russian'])
+                ->orWhereFullText('name', $searchStr, ['language' => 'russian'])
+                ->orWhereFullText('params', $searchStr, ['language' => 'russian'])
+            );
         }
 
         if (isset($filter['priceFrom'])) {

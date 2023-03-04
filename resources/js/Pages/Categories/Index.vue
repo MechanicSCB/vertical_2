@@ -7,6 +7,7 @@ let props = defineProps({
 
 </script>
 <template>
+    <Head title="Каталог товаров интернет-магазина Вертикаль"/>
     <div class="">
         <h1 class="mt-8 ml-10 lg:text-5xl md:text-4xl md:text-left text-center text-3xl font-semibold md:mb-20 mb-12">
             Каталог товаров

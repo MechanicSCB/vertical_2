@@ -27,10 +27,11 @@ function decrementQuantity(){
         <HeartIcon class="absolute z-10 right-5 top-7 fill-ui-text-light hover:fill-ui-link-hover w-10 h-10 hover:w-[42px] hover:[42px] cursor-pointer"/>
 
         <!-- IMAGE/TITLE LINK -->
-        <Link :href="'/products/'+product.slug" class="product-link pt-2 flex flex-col">
-            <img class="mx-auto h-full md:opacity-75 transition-all"
-                 :src="'/storage/images/products/s220/'+product.code+'.jpg'">
-            <h3 class="mx-4 text-lg font-bold hover:text-ui-link-hover transition-all">{{ product.name }}</h3>
+        <Link :href="'/products/'+product.slug" class="product-link pt-2 group">
+            <div class="flex min-h-[200px] items-center md:opacity-75 group-hover:opacity-100">
+                <img class="mx-auto transition-all" :src="'/storage/images/products/s220/'+product.code+'.jpg'">
+            </div>
+            <h3 class="mt-3 mx-4 text-lg font-bold hover:text-ui-link-hover transition-all">{{ product.name }}</h3>
         </Link>
 
         <!-- PRICE -->
@@ -78,11 +79,6 @@ function decrementQuantity(){
     </div>
 </template>
 <style scoped>
-/* TODO: Replace to html using group */
-.product-card:hover .product-link > img {
-    opacity: 1;
-}
-
 .product-card:hover button.add-to-cart {
     border-color: var(--color-ui-link-text-hover);
 }

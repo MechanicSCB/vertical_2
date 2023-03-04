@@ -6,7 +6,7 @@ use App\Models\Category;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class CategorySeeder extends Seeder
@@ -47,5 +47,17 @@ class CategorySeeder extends Seeder
         // set increment id value to next after max
         $maxId++;
         DB::statement("ALTER SEQUENCE categories_id_seq RESTART WITH $maxId;");
+    }
+
+    public function reverse()
+    {
+        $keys = Schema::getColumnListing('categories');
+        $keys = array_filter($keys, fn($v) => ! in_array($v, ['created_at', 'updated_at']));
+
+        $products = Category::query()
+            ->toBase()
+            ->get($keys);
+
+        file_put_contents(database_path('seeders/src/categories.json'), json_encode($products, JSON_UNESCAPED_UNICODE));
     }
 }

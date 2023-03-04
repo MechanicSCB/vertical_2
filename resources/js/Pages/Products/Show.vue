@@ -23,6 +23,7 @@ function decrementQuantity(){
 }
 </script>
 <template>
+    <Head :title="product.name + ' цена - купить в интернет-магазине Вертикаль'"/>
     <Breadcrumbs :breadcrumbs="breadcrumbs"/>
 
     <!--    MODAL IMAGE    -->

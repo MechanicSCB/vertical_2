@@ -3,6 +3,9 @@
 
 namespace App\Dev;
 
+use App\Models\Category;
+use App\Models\Product;
+use Exception;
 use GdImage;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,21 +14,24 @@ class ImageHandler
     public function test()
     {
         df(tmr(@$this->start), 'ImageHandler');
-        set_time_limit(300);
+        set_time_limit(6000);
         $srcDir = storage_path('app/public/images/products/cropped/');
-        $storeDir = storage_path('app/public/images/products/s220_test/');
+        $storeDir = storage_path('app/public/images/products/s220/');
         $filenames = array_values(array_filter(scandir($srcDir), fn($v) => str_ends_with($v, '.jpg')));
-        $filenames = array_slice($filenames,0,3);
+        $s220 = array_values(array_filter(scandir($storeDir), fn($v) => str_ends_with($v, '.jpg')));
+        $filenames = array_diff($filenames, $s220);
+        //df(tmr(@$this->start), count($filenames), count($s220));
+        //$filenames = array_slice($filenames,0,1000);
         //df(tmr(@$this->start), $filenames);
 
         foreach ($filenames as $filename){
             $srcPath = $srcDir.$filename;
             $storePath = $storeDir .$filename;
             //$this->cropImage($srcPath,$storePath);
-            //$this->copyResizeJpgAspectRatio($srcPath, 220, 220,$storePath);
+            $this->copyResizeJpgAspectRatio($srcPath, 220, 220,$storePath);
         }
-
-        df(tmr(@$this->start), scandir($storeDir));
+        //
+        df(tmr(@$this->start), 'done');
     }
 
     public function copyResizeJpgAspectRatio(string $srcPath, int $newWidth, int $newHeight = null, string $storePath = null)

@@ -4,6 +4,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\NodeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -20,8 +21,6 @@ use Inertia\Inertia;
 */
 
 //Route::get('/test', [\App\Dev\Parser::class,'run']);
-Route::get('/test', [\App\Dev\ImageHandler::class,'test']);
-Route::get('/seed', [\Database\Seeders\NodeSeeder::class,'run']);
 
 Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/catalog', [CategoryController::class, 'index'])->name('categories.index');
@@ -46,7 +45,9 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
 
 Route::post('/products_data', [ProductController::class, 'getData'])->name('products.data');
-//Route::post('/products/get', [ProductController::class, 'getProducts'])->name('products.get');
+
+// SEARCH
+Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 
 // JETSTREAM

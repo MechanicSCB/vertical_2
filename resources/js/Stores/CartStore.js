@@ -37,6 +37,7 @@ export let useCartStore = defineStore('cart', {
         },
 
         add(product, addQuantity = 1){
+            this.getCookieItems();
             this.cookieItems[product.id] = {
                 'id':product.id,
                 // 'code':product.code, 'name':product.name, 'price':product.price,
@@ -53,12 +54,14 @@ export let useCartStore = defineStore('cart', {
         },
 
         removePosition(productId){
+            this.getCookieItems();
             delete this.cookieItems[productId];
             this.setItemsToCookie();
             this.getProducts().then();
         },
 
         increment(productId) {
+            this.getCookieItems();
             if(typeof this.cookieItems[productId]?.quantity !== "undefined"){
                 this.cookieItems[productId].quantity +=1;
                 this.setItemsToCookie();
@@ -69,6 +72,7 @@ export let useCartStore = defineStore('cart', {
         },
 
         decrement(productId) {
+            this.getCookieItems();
             if(typeof this.cookieItems[productId]?.quantity === "undefined"){
                 console.log('no item:' + productId)
                 return;

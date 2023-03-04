@@ -1,7 +1,7 @@
 <script setup>
-import TrashIcon from "../../Svg/TrashIcon.vue";
-import BoxIcon from "../../Svg/BoxIcon.vue";
-import CursorArrowClickedIcon from "../../Svg/CursorArrowClickedIcon.vue";
+import TrashIcon from "../../../Svg/TrashIcon.vue";
+import BoxIcon from "../../../Svg/BoxIcon.vue";
+import CursorArrowClickedIcon from "../../../Svg/CursorArrowClickedIcon.vue";
 
 let props = defineProps({products: Object});
 

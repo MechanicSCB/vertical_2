@@ -15,6 +15,7 @@ onMounted(() => {
 </script>
 
 <template>
+    <Head title="Моя корзина"/>
     <div class="mx-auto px-9 max-w-[1656px]">
         <div class="mt-3 flex gap-2">
             <button class="w-10 h-10" v-for="relatedProduct in relatedProducts" @click="cart.add(relatedProduct)">
@@ -25,6 +26,7 @@ onMounted(() => {
 
         <!-- SHOW CART ITEMS -->
         <div v-if="Object.keys(cart.products).length">
+            <!-- Header/Clear Cart -->
             <div class="my-12 flex justify-between">
                 <h1 class="text-3xl font-semibold">Моя корзина</h1>
 
@@ -38,22 +40,21 @@ onMounted(() => {
                 </button>
             </div>
 
+            <!-- Cart Table -->
             <div class="flex flex-col xl:flex-row gap-x-8">
                 <!-- Cart Products Table -->
                 <div class="mb-24 w-full xl:w-2/3 2xl:w-3/4">
                     <div class="grid grid-cols-5 text-ui-text-secondary mb-9">
-                        <span></span>
-                        <span>Товар</span>
+                        <span class="col-span-2 ml-[136px]">Товар</span>
                         <span class="text-center">Цена</span>
                         <span class="text-center">Кол-во</span>
                         <span class="text-center">Итого</span>
                     </div>
                     <div v-for="product in cart.products" class="py-3 grid grid-cols-5 border-t items-center">
                         <Link :href="route('products.show', product.slug)"
-                              class="group col-span-2 grid-cols-2 grid grid-cols-2">
-                            <div class="ml-4 w-[82px] h-[82px]">
-                                <img class="mx-auto max-w-full max-h-full"
-                                     :src="'/storage/images/products/s220/'+product.code+'.jpg'" :alt="product.name"/>
+                              class="group col-span-2 flex">
+                            <div class="ml-4 w-[82px] h-[82px] shrink-0 flex items-center mr-10">
+                                <img class="mx-auto max-w-[82px] max-h-[82px]" :src="'/storage/images/products/s220/'+product.code+'.jpg'" :alt="product.name"/>
                             </div>
                             <div class=" flex flex-col">
                                 <span class="font-bold text-[14px] group-hover:text-ui-link-hover">{{

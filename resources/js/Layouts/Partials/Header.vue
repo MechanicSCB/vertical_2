@@ -24,10 +24,10 @@ import HeaderCartLink from "./HeaderCartLink.vue";
             <LogoFull class="hidden md:block"/>
         </Link>
         <div class="right_header flex xs:gap-6 gap-2">
-            <Link href="/tree">
+            <Link href="/search">
                 <MagnifyIcon class="fill-ui-text-secondary"/>
             </Link>
-            <Link href="">
+            <Link href="/tree">
                 <PhoneIcon class="fill-ui-text-accent"/>
             </Link>
         </div>

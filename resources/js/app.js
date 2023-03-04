@@ -9,10 +9,11 @@ import { createPinia } from "pinia";
 
 import MainLayout from '@/Layouts/MainLayout.vue';
 
-const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
+// const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Интернет-магазин Вертикаль';
+const defaultTitle = 'Интернет-магазин Вертикаль';
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => title || defaultTitle,
     resolve: (name) => {
         const page = resolvePageComponent(
             `./Pages/${name}.vue`,

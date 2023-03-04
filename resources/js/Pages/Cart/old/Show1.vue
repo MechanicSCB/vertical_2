@@ -1,10 +1,10 @@
 <script setup>
-import TrashIcon from "../../Svg/TrashIcon.vue";
-import BoxIcon from "../../Svg/BoxIcon.vue";
-import CursorArrowClickedIcon from "../../Svg/CursorArrowClickedIcon.vue";
-import {cart, clearCart, removeItemFromCart, addToCart, incrementProductQuantity, decrementProductQuantity, getCart,getCookie, updateCartFromCookie} from "../../Stores/CartStore.js";
-import ProductCard from "../Categories/Partials/ProductCard.vue";
-import {reactive} from "vue";
+// import TrashIcon from "../../../Svg/TrashIcon.vue";
+// import BoxIcon from "../../../Svg/BoxIcon.vue";
+// import CursorArrowClickedIcon from "../../../Svg/CursorArrowClickedIcon.vue";
+// import {cart, clearCart, removeItemFromCart, addToCart, incrementProductQuantity, decrementProductQuantity, getCart,getCookie, updateCartFromCookie} from "../../../Stores/CartStore.js";
+// import ProductCard from "../../Categories/Partials/ProductCard.vue";
+// import {reactive} from "vue";
 
 let props = defineProps({cartProducts: Object, relatedProducts:Object});
 // TODO: перед каждым изменением корзины обновлять содержимое из куки

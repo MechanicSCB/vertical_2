@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Node extends Model
 {
@@ -78,8 +79,18 @@ class Node extends Model
 
             if($product === null){
                 $imagePath = $this->children->first()->image ?? "/storage/images/categories/1572.jpg";
+
+                if (Storage::exists(str_replace('/storage/', '/public/', $imagePath))) {
+                    if(! str_ends_with($imagePath, '/1572.jpg')){
+                        copy(storage_path("app/public/images/".Str::afterLast($imagePath,'images/')), storage_path("app/public/images/categories/{$this->category->id}.jpg"));
+                    }
+                }
             }else{
                 $imagePath = "/storage/images/products/s220/{$product['code']}.jpg";
+
+                if (Storage::exists(str_replace('/storage/', '/public/', $imagePath))) {
+                    copy(storage_path("app/public/images/products/s220/{$product['code']}.jpg"), storage_path("app/public/images/categories/{$this->category->id}.jpg"));
+                }
             }
         }
 

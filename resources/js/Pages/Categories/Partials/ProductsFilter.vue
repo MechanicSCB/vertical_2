@@ -10,6 +10,7 @@ import 'nouislider/dist/nouislider.css';
 let props = defineProps({
     filterData: Object,
     productsTotal: Number,
+    time:String,
 });
 
 let form = useForm({
@@ -17,6 +18,7 @@ let form = useForm({
     priceFrom: props.filterData.form.priceFrom ?? '',
     priceTo: props.filterData.form.priceTo ?? '',
     params: props.filterData.form.params ?? {},
+    search: props.filterData.form.search ??'',
 });
 
 let slider = reactive({});
@@ -63,7 +65,7 @@ function submit() {
                 <span class="mb-0.5">Фильтр</span>
                 <FilterIcon class="ml-1 fill-ui-text-accent"/>
             </div>
-            <div class="ml-8 flex items-center text-sm">Товаров: <span class="ml-1">{{ productsTotal }}</span></div>
+            <div class="ml-8 flex items-center text-sm">Товаров: <span class="ml-1">{{ productsTotal }} ({{ time }})</span></div>
         </div>
 
         <!-- FORM -->
@@ -74,7 +76,12 @@ function submit() {
                 <option v-for="(option,key) in filterData.sort_options" :value="key">{{ option.name }}</option>
             </select>
 
+            <!-- SEARCH INPUT -->
+            <input @input="submit" v-model="form.search" type="text" placeholder="Что вы хотите найти?"
+                   class="mt-3 w-full border-none !ring-0 rounded bg-ui-light text-ui-text-secondary mr-3">
+
             <!-- PRICE FILTER -->
+            <!-- TODO? не отправлять в фильтр минимальное и максимальное значение -->
             <div class="mt-6">
                 <div class="text-lg">Цена</div>
                 <!-- noUiSlider   https://refreshless.com/nouislider/ -->
