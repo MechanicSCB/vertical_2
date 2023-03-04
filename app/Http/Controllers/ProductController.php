@@ -6,6 +6,8 @@ use App\Actions\Nodes\GetAncestorsCategoriesFromPath;
 use App\Actions\Nodes\GetBreadcrumbsFromUrl;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Inertia\Response;
 use Inertia\ResponseFactory;
 
@@ -24,6 +26,18 @@ class ProductController extends Controller
         ];
 
         return inertia("Products/Show", compact('product', 'breadcrumbs'));
+    }
+
+    /**
+     * return products data from requested ids
+     */
+    public function getData(Request $request): Collection
+    {
+        $ids = $request['ids'] ?? [];
+        $fields = ['id','code','name', 'slug','price'];
+        $products = DB::table('products')->whereIn('id',$ids)->get($fields)->keyBy('id');
+
+        return $products;
     }
 
     /**

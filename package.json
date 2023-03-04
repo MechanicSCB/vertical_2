@@ -19,6 +19,7 @@
         "vue": "^3.2.31"
     },
     "dependencies": {
-        "nouislider": "^15.7.0"
+        "nouislider": "^15.7.0",
+        "pinia": "^2.0.32"
     }
 }

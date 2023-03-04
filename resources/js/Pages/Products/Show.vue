@@ -1,4 +1,5 @@
 <script setup>
+import {useCartStore} from "../../Stores/CartStore.js";
 import Breadcrumbs from "../../Layouts/Partials/Breadcrumbs.vue";
 import HeartIcon from "../../Svg/HeartIcon.vue";
 import {ref} from "vue";
@@ -6,13 +7,20 @@ import CheckedIcon from "../../Svg/CheckedIcon.vue";
 import CursorArrowClickedIcon from "../../Svg/CursorArrowClickedIcon.vue";
 import ProductTabs from "./Partials/ProductTabs.vue";
 
-let showModalImg = ref(false);
-let showOrigSizeImg = ref(false);
-
 let props = defineProps({
     breadcrumbs: Object,
     product: Object,
 });
+
+let cart = useCartStore();
+let showModalImg = ref(false);
+let showOrigSizeImg = ref(false);
+
+function decrementQuantity(){
+    if(props.product.quantity > 1){
+        props.product.quantity--;
+    }
+}
 </script>
 <template>
     <Breadcrumbs :breadcrumbs="breadcrumbs"/>
@@ -77,7 +85,8 @@ let props = defineProps({
                             <div>
                                 <!-- quantity -->
                                 <div class="px-5 flex border bg-ui-body w-fit h-[60px] rounded-full items-center justify-between text-3xl">
-                                    <button @click="product.quantity--" class="mb-3 text-[40px] mr-1 text-ui-text-primary hover:text-ui-link-hover">-</button>
+                                    <button @click="decrementQuantity" class="mb-3 text-[40px] mr-1 text-ui-text-primary hover:text-ui-link-hover"
+                                    >-</button>
                                     <div class="mx-5 text-center">{{ product.quantity ??= 1 }}</div>
                                     <button @click="product.quantity++" class="mb-2 text-[40px] text-ui-text-primary hover:text-ui-link-hover">+</button>
                                 </div>
@@ -86,9 +95,9 @@ let props = defineProps({
                             </div>
 
                             <!-- add to cart -->
-                            <button class="add-to-cart h-[60px] w-32 bg-ui-accent hover:bg-ui-body text-ui-text-accent_inverse hover:text-ui-text-accent border-[3px] border-ui-text-accent text-sm font-semibold rounded-[30px]">
-                                В корзину
-                            </button>
+                            <button  @click="cart.add(product,product.quantity)"
+                                class="add-to-cart h-[60px] w-32 bg-ui-accent hover:bg-ui-body text-ui-text-accent_inverse hover:text-ui-text-accent border-[3px] border-ui-text-accent text-sm font-semibold rounded-[30px]"
+                            >В корзину</button>
                         </div>
                     </div>
 

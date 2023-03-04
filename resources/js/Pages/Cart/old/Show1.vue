@@ -1,35 +1,71 @@
 <script setup>
-import {useCartStore} from "../../Stores/CartStore.js";
-import {onMounted} from "vue";
 import TrashIcon from "../../Svg/TrashIcon.vue";
 import BoxIcon from "../../Svg/BoxIcon.vue";
 import CursorArrowClickedIcon from "../../Svg/CursorArrowClickedIcon.vue";
+import {cart, clearCart, removeItemFromCart, addToCart, incrementProductQuantity, decrementProductQuantity, getCart,getCookie, updateCartFromCookie} from "../../Stores/CartStore.js";
 import ProductCard from "../Categories/Partials/ProductCard.vue";
+import {reactive} from "vue";
 
-let props = defineProps({relatedProducts: Object});
-let cart = useCartStore();
+let props = defineProps({cartProducts: Object, relatedProducts:Object});
+// TODO: перед каждым изменением корзины обновлять содержимое из куки
+// let cart = reactive(getCart());
 
-onMounted(() => {
-    cart.getProducts();
-});
+function getCartProducts(){
+    // cart = getCart();
+    // updateCartFromCookie();
+
+    let products = [];
+
+    for (let productId of Object.keys(cart)){
+        let product = props.cartProducts[productId] ?? props.relatedProducts[productId];
+
+        if(typeof product === 'undefined'){
+            delete cart[productId];
+            continue;
+        }
+
+        product.quantity = cart[productId];
+
+        products.push(product)
+    }
+
+    return products;
+}
+
+function getOrderSum() {
+    let orderSum = 0;
+
+    for (let productId of Object.keys(cart)){
+        let product = props.cartProducts[productId] ?? props.relatedProducts[productId];
+
+        product.quantity = cart[productId];
+
+        orderSum += product.price * cart[productId];
+    }
+
+    return orderSum;
+}
+
+function getDiscount() {
+    return 0.95;
+}
 </script>
 
 <template>
     <div class="mx-auto px-9 max-w-[1656px]">
-        <div class="mt-3 flex gap-2">
-            <button class="w-10 h-10" v-for="relatedProduct in relatedProducts" @click="cart.add(relatedProduct)">
-                <img class="mx-auto max-w-full max-h-full"
-                     :src="'/storage/images/products/s220/'+relatedProduct.code+'.jpg'"/>
+        <div class="1hidden mt-3 flex gap-2">
+            <button class="w-10 h-10" v-for="relatedProduct in relatedProducts" @click="addToCart(relatedProduct.id)">
+                <img class="mx-auto max-w-full max-h-full" :src="'/storage/images/products/s220/'+relatedProduct.code+'.jpg'"/>
             </button>
         </div>
 
         <!-- SHOW CART ITEMS -->
-        <div v-if="Object.keys(cart.products).length">
+        <div v-if="Object.keys(cart).length">
             <div class="my-12 flex justify-between">
                 <h1 class="text-3xl font-semibold">Моя корзина</h1>
 
                 <!-- Clear cart -->
-                <button @click="cart.clear()" class="flex items-center gap-3 group">
+                <button @click="clearCart" class="flex items-center gap-3 group">
                     <TrashIcon class="fill-ui-text-secondary w-6 group-hover:fill-ui-text-accent"/>
                     <div
                         class="border-b border-dashed border-ui-text-accent font-semibold text-ui-text-accent group-hover:border-ui-body">
@@ -48,7 +84,7 @@ onMounted(() => {
                         <span class="text-center">Кол-во</span>
                         <span class="text-center">Итого</span>
                     </div>
-                    <div v-for="product in cart.products" class="py-3 grid grid-cols-5 border-t items-center">
+                    <div v-for="product in getCartProducts()" class="py-3 grid grid-cols-5 border-t items-center">
                         <Link :href="route('products.show', product.slug)"
                               class="group col-span-2 grid-cols-2 grid grid-cols-2">
                             <div class="ml-4 w-[82px] h-[82px]">
@@ -67,22 +103,19 @@ onMounted(() => {
                             <!-- quantity -->
                             <div
                                 class="px-5 flex border w-fit h-[43px] rounded-full items-center justify-between text-3xl">
-                                <button @click="cart.decrement(product.id)"
-                                        class="mb-3 text-[40px] mr-1"
-                                        :class="product.quantity >1
-                                        ? 'text-ui-text-primary hover:text-ui-link-hover'
-                                        :'text-ui-text-secondary cursor-not-allowed'"
-                                >-</button>
+                                <button @click="decrementProductQuantity(product.id)"
+                                        class="mb-3 text-[40px] mr-1 text-ui-text-primary hover:text-ui-link-hover">-
+                                </button>
                                 <div class="mx-3 text-center">{{ product.quantity ??= 1 }}</div>
                                 <!-- <input type="text" name="quantity" class="" :value="product.quantity ??= 1">-->
-                                <button @click="cart.increment(product.id)"
-                                        class="mb-2 text-[40px] text-ui-text-primary hover:text-ui-link-hover"
-                                >+</button>
+                                <button @click="incrementProductQuantity(product.id)"
+                                        class="mb-2 text-[40px] text-ui-text-primary hover:text-ui-link-hover">+
+                                </button>
                             </div>
                         </div>
                         <div class="font-semibold justify-end flex gap-3">
                             {{ (product.price * product.quantity).toLocaleString() }} ₽
-                            <button @click="cart.removePosition(product.id)">
+                            <button @click="removeItemFromCart(product.id)">
                                 <TrashIcon class="w-6 fill-ui-text-accent hover:fill-ui-text-primary"/>
                             </button>
                         </div>
@@ -96,15 +129,11 @@ onMounted(() => {
                     <div class="mt-6 font-semibold">
                         <div class="flex justify-between border-b border-ui-text-primary pb-4">
                             <div class="font-normal">Сумма</div>
-                            <div class="">{{ cart.orderSum.toLocaleString() }} ₽</div>
-                        </div>
-                        <div class="mt-2 flex justify-between border-b border-ui-text-primary pb-4">
-                            <div class="text-ui-text-accent">Скидка</div>
-                            <div class="">{{ ((1 - cart.discount) * 100).toLocaleString() }}%</div>
+                            <div class="">{{ getOrderSum().toLocaleString() }} ₽</div>
                         </div>
                         <div class="mt-2 flex justify-between border-b border-ui-text-primary pb-4">
                             <div class="">Итого</div>
-                            <div class="">{{ (cart.orderSum * cart.discount).toLocaleString() }} ₽</div>
+                            <div class="">{{ (getOrderSum() * getDiscount()).toLocaleString() }} ₽</div>
                         </div>
                     </div>
 
@@ -114,7 +143,7 @@ onMounted(() => {
                         Стоимость указана без учета доставки
                     </div>
 
-                    <button @click="placeOrder"
+                    <button @click="addToCart"
                             class="mt-6 h-[60px] block mx-auto px-8 bg-ui-body text-ui-text-accent hover:bg-ui-accent hover:text-ui-text-accent_inverse border-[3px] border-ui-text-accent font-semibold rounded-[30px]">
                         Оформить заказ
                     </button>
@@ -156,5 +185,6 @@ onMounted(() => {
         <div class="mt-10 grid grid-cols-3 gap-2">
             <ProductCard v-for="relatedProduct in relatedProducts" :product="relatedProduct"/>
         </div>
+
     </div>
 </template>

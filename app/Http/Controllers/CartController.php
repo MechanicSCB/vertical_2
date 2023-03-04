@@ -10,6 +10,13 @@ class CartController extends Controller
 {
     public function show(): Response|ResponseFactory
     {
+        $relatedProducts = Product::query()->take(3)->inRandomOrder()->get()->keyBy('id');
+
+        return inertia('Cart/Show', compact( 'relatedProducts'));
+    }
+
+    public function showOld(): Response|ResponseFactory
+    {
         $cart = json_decode($_COOKIE['cart'] ?? '{}', 1);
         $productsIds = array_keys($cart);
         $cartProducts = Product::query()

@@ -1,11 +1,16 @@
 <script setup>
+import {useCartStore} from "../../../Stores/CartStore.js";
 import HeartIcon from "../../../Svg/HeartIcon.vue";
 import CursorArrowClickedIcon from "../../../Svg/CursorArrowClickedIcon.vue";
-import {cart, addToCart} from "../../../Stores/cartStore.js";
 
-let props = defineProps({
-    product: Object,
-});
+let props = defineProps({product: Object,});
+let cart = useCartStore();
+
+function decrementQuantity(){
+    if(props.product.quantity > 1){
+        props.product.quantity--;
+    }
+}
 </script>
 
 <template>
@@ -38,7 +43,7 @@ let props = defineProps({
                 <div>
                     <!-- quantity -->
                     <div class="px-5 flex border w-fit h-[60px] rounded-full items-center justify-between text-3xl">
-                        <button @click="product.quantity--"
+                        <button @click="decrementQuantity()"
                                 class="mb-3 text-[40px] mr-1 text-ui-text-primary hover:text-ui-link-hover">-
                         </button>
                         <div class="mx-1 text-center">{{ product.quantity ??= 1 }}</div>
@@ -53,7 +58,7 @@ let props = defineProps({
                         class="font-semibold">{{ (product.price * product.quantity).toLocaleString() }} ₽</span></div>
                 </div>
                 <!-- add to cart -->
-                <button @click="addToCart(product.id, product.quantity)"
+                <button @click="cart.add(product,product.quantity)"
                         class="add-to-cart h-[60px] w-32 bg-ui-body text-ui-text-secondary hover:bg-ui-accent hover:text-ui-text-accent_inverse border-[3px] hover:border-ui-text-accent border-ui-text-secondary text-sm font-semibold rounded-[30px]">
                     В корзину
                 </button>

@@ -5,6 +5,7 @@ import { createSSRApp, h } from 'vue';
 import { createInertiaApp, Link, Head } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import { createPinia } from "pinia";
 
 import MainLayout from '@/Layouts/MainLayout.vue';
 
@@ -28,6 +29,7 @@ createInertiaApp({
         return createSSRApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue, Ziggy)
+            .use(createPinia())
             .component("Link", Link)
             .component("Head", Head)
             .mount(el);

@@ -45,6 +45,9 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 // Cart
 Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
 
+Route::post('/products_data', [ProductController::class, 'getData'])->name('products.data');
+//Route::post('/products/get', [ProductController::class, 'getProducts'])->name('products.get');
+
 
 // JETSTREAM
 Route::middleware([
