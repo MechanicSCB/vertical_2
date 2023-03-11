@@ -14,9 +14,18 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             CategorySeeder::class,
-            //CategorySeederTest::class,
             NodeSeeder::class,
             ProductSeeder::class,
         ]);
+    }
+
+    /**
+     * Save json files from db tables
+     */
+    public function reverse(): void
+    {
+        (new CategorySeeder())->reverse();
+        (new NodeSeeder())->reverse();
+        (new ProductSeeder())->reverse();
     }
 }

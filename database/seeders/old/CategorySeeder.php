@@ -24,8 +24,40 @@ class CategorySeeder extends Seeder
         foreach (array_chunk($categories, 1000) as $chunk) {
             Category::upsert($chunk, ['id']);
         }
+    }
 
-        $maxId = DB::table('categories')->max('id') + 1;
+    public function run_old(): void
+    {
+        $categories = json_decode(file_get_contents(database_path('seeders/src/categories.json')), 1)['categories'];
+
+        $maxId = 1;
+
+        foreach ($categories as &$category) {
+            if($maxId < $category['id']){
+                $maxId = $category['id'];
+            }
+
+            $category['parent_id'] = $category['parentId'] ?? 1;
+            $category['slug'] ??= Str::slug($category['title'],'-','ru');
+            $category['cat_level'] = $category['level'] + 1;
+            unset($category['url'], $category['parentId'], $category['level']);
+        }
+
+        array_unshift($categories, [
+            "id" => 1,
+            "title" => "Каталог",
+            "lft" => 0,
+            "rgt" => 0,
+            "cat_level" => 0,
+            "parent_id" => null,
+            "slug" => "catalog",
+        ]);
+
+        Category::query()->truncate();
+        Category::query()->upsert($categories, ['id']);
+
+        // set increment id value to next after max
+        $maxId++;
         DB::statement("ALTER SEQUENCE categories_id_seq RESTART WITH $maxId;");
     }
 

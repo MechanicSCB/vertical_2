@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Product;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -23,6 +24,9 @@ class ProductSeeder extends Seeder
         foreach (array_chunk($products, 1000) as $chunk) {
             Product::upsert($chunk, ['id']);
         }
+
+        $maxId = DB::table('products')->max('id') + 1;
+        DB::statement("ALTER SEQUENCE products_id_seq RESTART WITH $maxId;");
     }
 
     public function reverse()

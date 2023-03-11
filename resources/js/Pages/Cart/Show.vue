@@ -92,7 +92,7 @@ onMounted(() => {
 
                 <!-- Place An Order -->
                 <div class="pt-10 mx-auto max-w-[560px] px-7 border rounded-3xl pb-5 w-full xl:w-1/3 2xl:w-1/4">
-                    <div class="text-xl font-semibold">{{ cart.length }} товара</div>
+                    <div class="text-xl font-semibold">Товаров: {{ Object.keys(cart.products).length }}</div>
                     <!-- Price Rows -->
                     <div class="mt-6 font-semibold">
                         <div class="flex justify-between border-b border-ui-text-primary pb-4">
@@ -103,7 +103,7 @@ onMounted(() => {
                             <div class="text-ui-text-accent">Скидка</div>
                             <div class="">{{ ((1 - cart.discount) * 100).toLocaleString() }}%</div>
                         </div>
-                        <div class="mt-2 flex justify-between border-b border-ui-text-primary pb-4">
+                        <div class="mt-2 flex justify-between pb-4">
                             <div class="">Итого</div>
                             <div class="">{{ (cart.orderSum * cart.discount).toLocaleString() }} ₽</div>
                         </div>
@@ -115,10 +115,10 @@ onMounted(() => {
                         Стоимость указана без учета доставки
                     </div>
 
-                    <button @click="placeOrder"
-                            class="mt-6 h-[60px] block mx-auto px-8 bg-ui-body text-ui-text-accent hover:bg-ui-accent hover:text-ui-text-accent_inverse border-[3px] border-ui-text-accent font-semibold rounded-[30px]">
+                    <Link :href="route('orders.create')"
+                            class="flex w-fit items-center mt-6 h-[60px] block mx-auto px-8 bg-ui-body text-ui-text-accent hover:bg-ui-accent hover:text-ui-text-accent_inverse border-[3px] border-ui-text-accent font-semibold rounded-[30px]">
                         Оформить заказ
-                    </button>
+                    </Link>
 
                     <!-- BUY IN ONE CLICK -->
                     <button

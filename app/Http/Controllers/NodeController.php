@@ -7,7 +7,6 @@ use App\Actions\Nodes\ReorderNode;
 use App\Classes\TreeHandler;
 use App\Models\Node;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Response;
 use Inertia\ResponseFactory;
@@ -25,7 +24,7 @@ class NodeController extends Controller
         $tree['nodes'] = (new TreeHandler())->getTree(stdToArray($nodes));
         //$tree['nodes'] = (new TreeHandler())->getTreeRec(stdToArray($nodes));
 
-        return inertia('Nodes/Index', compact('tree'));
+        return inertia('Admin/Nodes/Index', compact('tree'));
     }
 
     public function copy(Node $targetNode, Node $destNode): RedirectResponse

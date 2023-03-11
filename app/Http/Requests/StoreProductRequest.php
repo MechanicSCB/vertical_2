@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreCategoryRequest extends FormRequest
+class StoreProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,12 +18,18 @@ class StoreCategoryRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
     public function rules(): array
     {
         return [
-            'title' => [
+            'code' => [
+                'required',
+                'numeric',
+                'min:2',
+                Rule::unique('products')->ignore($this->product),
+            ],
+            'name' => [
                 'required',
                 'string',
                 'min:2',
@@ -33,19 +39,8 @@ class StoreCategoryRequest extends FormRequest
                 'string',
                 'min:2',
                 'alpha_dash',
-                Rule::unique('categories')->ignore($this->category),
+                Rule::unique('products')->ignore($this->product),
             ],
-            //'parent_nodes.*.id' => [
-            //    'exists:category_nodes',
-            //],
-            //'parent_nodes.*.order_inside' => [
-            //    'nullable',
-            //    'numeric',
-            //],
-            //'parent_id' => [
-            //    'nullable',
-            //    'exists:categories',
-            //],
         ];
     }
 }

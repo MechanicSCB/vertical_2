@@ -14,6 +14,8 @@ class Node extends Model
     use HasFactory;
 
     public static string $separator = '.';
+    // TODO? remove? used in admin categories table
+    protected $appends=['url'];
 
     // Relations
     public function category(): BelongsTo

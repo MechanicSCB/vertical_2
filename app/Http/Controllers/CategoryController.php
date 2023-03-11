@@ -144,18 +144,6 @@ class CategoryController extends Controller
         return $productsQuery;
     }
 
-    public function destroy(Category $category): RedirectResponse
-    {
-        $category->delete();
-
-        return back()->with('success', __('flash.successfully_deleted'));
-    }
-
-    //public function create(): Response|ResponseFactory
-    //{
-    //    return inertia('Categories/Create');
-    //}
-    //
     //public function store(StoreCategoryRequest $request): RedirectResponse
     //{
     //    $validated = $request->validated();
@@ -184,20 +172,6 @@ class CategoryController extends Controller
     //        // Not insert nodes due to different row lengths possibility (has order or not)
     //        Node::query()->create($categoryNode);
     //    }
-    //
-    //    return back()->with('success', __('flash.successfully_saved'));
-    //}
-    //
-    //public function edit(Category $category): Response|ResponseFactory
-    //{
-    //    $category->load('categoryNodes');
-    //
-    //    return inertia('Categories/Edit', compact('category'));
-    //}
-    //
-    //public function update(Category $category, StoreCategoryRequest $request): RedirectResponse
-    //{
-    //    $category->update($request->validated());
     //
     //    return back()->with('success', __('flash.successfully_saved'));
     //}

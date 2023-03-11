@@ -22,6 +22,7 @@ module.exports = {
                     accent: 'var(--color-ui-accent)',
                     secondary: 'var(--color-ui-secondary)',
                     light: 'var(--color-ui-light)',
+                    accent_light: 'var(--color-ui-accent-light)',
                     text: {
                         primary: 'var(--color-ui-text-primary)',
                         accent: 'var(--color-ui-text-accent)',
