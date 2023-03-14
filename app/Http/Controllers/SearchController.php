@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-    public function getSearchResults(Request $request)
+    public function getSearchResults(Request $request): array
     {
         $searchString = $request['searchString'] ?? '';
         $client = new MeiliClientHandler();

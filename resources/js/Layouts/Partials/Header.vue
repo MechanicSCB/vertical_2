@@ -7,6 +7,9 @@ import CartIcon from "../../Svg/CartIcon.vue";
 import MagnifyIcon from "../../Svg/MagnifyIcon.vue";
 import PhoneIcon from "../../Svg/PhoneIcon.vue";
 import HeaderCartLink from "./HeaderCartLink.vue";
+import {inject} from "vue";
+
+let showSearchArea = inject('showSearchArea');
 </script>
 <template>
     <!--    chock    -->
@@ -24,9 +27,9 @@ import HeaderCartLink from "./HeaderCartLink.vue";
             <LogoFull class="hidden md:block"/>
         </Link>
         <div class="right_header flex xs:gap-6 gap-2">
-            <Link href="/search">
-                <MagnifyIcon class="fill-ui-text-secondary"/>
-            </Link>
+            <button>
+                <MagnifyIcon @click="showSearchArea=!showSearchArea"  class="fill-ui-text-secondary"/>
+            </button>
             <Link href="/tree">
                 <PhoneIcon class="fill-ui-text-accent"/>
             </Link>
