@@ -13,12 +13,15 @@
         "ext-json": "*",
         "doctrine/dbal": "^3.6",
         "guzzlehttp/guzzle": "^7.2",
+        "http-interop/http-factory-guzzle": "^1.2",
         "imangazaliev/didom": "^2.0",
         "inertiajs/inertia-laravel": "^0.6.8",
         "laravel/framework": "^10.0",
         "laravel/jetstream": "^3.0",
         "laravel/sanctum": "^3.2",
+        "laravel/scout": "^10.0",
         "laravel/tinker": "^2.8",
+        "meilisearch/meilisearch-php": "^1.0",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {

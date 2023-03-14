@@ -17,7 +17,7 @@ class OrderSeeder extends Seeder
     public function run(): void
     {
         //$orders = json_decode(file_get_contents(database_path('seeders/src/orders.json')), 1);
-        $orders = Order::factory()->count(50)->make()->toArray();
+        $orders = Order::factory()->count(77)->make()->toArray();
 
         Order::query()->truncate();
 

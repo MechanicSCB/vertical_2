@@ -91,6 +91,11 @@ Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orde
 Route::delete('/admin/orders/{order}',[OrderController::class, 'destroy'])->name('admin.orders.destroy');
 
 
+// SEARCH
+Route::post('/get-search-results',[SearchController::class, 'getSearchResults'])->name('getSearchResults');
+
+
+
 // JETSTREAM
 Route::middleware([
     'auth:sanctum',

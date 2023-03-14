@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use JetBrains\PhpStorm\ArrayShape;
+use Laravel\Scout\Searchable;
 
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     protected $fillable = ['title', 'slug'];
 
@@ -49,5 +51,18 @@ class Category extends Model
                     return $slug;
                 }
         );
+    }
+
+    /**
+     * MEILISEARCH
+     * Get the indexable data array for the model.
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'slug' => $this->slug,
+            'parent_id' => $this->parent_id,
+        ];
     }
 }
