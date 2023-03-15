@@ -22,8 +22,11 @@ class ProductController extends Controller
         $breadcrumbs = (new GetBreadcrumbsFromUrl())->get($nodeUrl);
         $breadcrumbs[] = [
             'title' => $product->name,
-            'url' =>  '/products/' . $product->slug,
+            'url' => '/products/' . $product->slug,
         ];
+
+        $product['images'] = $product->getImages();
+        $product['previews'] = $product->getPreviews();
 
         return inertia("Products/Show", compact('product', 'breadcrumbs'));
     }
@@ -34,8 +37,8 @@ class ProductController extends Controller
     public function getData(Request $request): Collection
     {
         $ids = $request['ids'] ?? [];
-        $fields = ['id','code','name', 'slug','price'];
-        $products = DB::table('products')->whereIn('id',$ids)->get($fields)->keyBy('id');
+        $fields = ['id', 'code', 'name', 'slug', 'price'];
+        $products = DB::table('products')->whereIn('id', $ids)->get($fields)->keyBy('id');
 
         return $products;
     }

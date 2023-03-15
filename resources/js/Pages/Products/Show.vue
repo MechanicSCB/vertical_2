@@ -1,11 +1,10 @@
 <script setup>
 import {useCartStore} from "../../Stores/CartStore.js";
 import Breadcrumbs from "../../Layouts/Partials/Breadcrumbs.vue";
-import HeartIcon from "../../Svg/HeartIcon.vue";
-import {ref} from "vue";
 import CheckedIcon from "../../Svg/CheckedIcon.vue";
 import CursorArrowClickedIcon from "../../Svg/CursorArrowClickedIcon.vue";
 import ProductTabs from "./Partials/ProductTabs.vue";
+import ProductImageBlock from "./Partials/ProductImageBlock.vue";
 
 let props = defineProps({
     breadcrumbs: Object,
@@ -13,8 +12,6 @@ let props = defineProps({
 });
 
 let cart = useCartStore();
-let showModalImg = ref(false);
-let showOrigSizeImg = ref(false);
 
 function decrementQuantity(){
     if(props.product.quantity > 1){
@@ -26,31 +23,13 @@ function decrementQuantity(){
     <Head :title="product.name + ' цена - купить в интернет-магазине Вертикаль'"/>
     <Breadcrumbs :breadcrumbs="breadcrumbs"/>
 
-    <!--    MODAL IMAGE    -->
-    <div @click="showModalImg=!showModalImg" v-if="showModalImg"
-         class="top-0 p-12 flex items-center min-h-screen fixed overflow-auto bg-[rgba(0,0,0,0.8)] w-full h-full z-50">
-        <img @click.stop="showOrigSizeImg=!showOrigSizeImg" :src="'/storage/images/products/cropped/'+product.code+'.jpg'"
-             :class="showOrigSizeImg ? 'cursor-zoom-out max-w-fit':'max-h-full cursor-zoom-in'"
-             class="mx-auto border-8 border-white transition duration-300 ease-out"
-        >
-    </div>
 
     <div class="mt-6 mx-auto px-9 max-w-[1656px]">
         <!--  IMAGE/BUY CARD  -->
         <div class="mt-10 flex md:flex-row flex-col gap-8">
             <!--  LEFT  -->
             <div class="xl:w-1/3 md:w-1/2 w-full">
-                <!-- IMAGE CARD -->
-                <div class="relative border rounded-3xl overflow-hidden h-[510px] flex items-center">
-                    <!-- FAVORITE -->
-                    <HeartIcon class="absolute right-5 top-4 fill-ui-text-light hover:fill-ui-link-hover w-10 h-10 hover:w-[42px] hover:[42px] cursor-pointer"/>
-
-                    <!-- IMAGE -->
-                    <div class="p-2 mx-auto product-link max-h-full flex flex-col">
-                        <img @click="showModalImg = true" class="mx-auto h-full cursor-pointer"
-                             :src="'/storage/images/products/cropped/'+product.code+'.jpg'">
-                    </div>
-                </div>
+                <ProductImageBlock :product="product"/>
             </div>
 
             <!--  RIGHT  -->

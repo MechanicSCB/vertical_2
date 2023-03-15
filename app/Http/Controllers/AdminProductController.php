@@ -17,8 +17,7 @@ class AdminProductController extends Controller
         $query = Product::query();
 
         if(strlen($search = $request['search'])){
-            $query->where('name', 'ilike',"%$search%"); // add? pr_trgm
-            //$query->whereFullText('name', $search); // TODO why slow?
+            $query->orwhereFullText('name', $search, ['language' => 'russian']);
         }
 
         $query->orderByDesc('updated_at');

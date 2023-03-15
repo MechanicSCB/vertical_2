@@ -38,6 +38,26 @@ class Product extends Model
         return Node::query()->where('category_id', $this->category->id)->first()->url;
     }
 
+    public function getImages(): array
+    {
+        $additionalImagesPath = storage_path('app/public/images/products/cropped/add');
+        $additionalImages = array_filter(scandir($additionalImagesPath),
+            fn($v) => str_starts_with($v, $this['code']));
+        $additionalImages = array_map(fn($v) => "/storage/images/products/cropped/add/$v",$additionalImages);
+
+        return ["/storage/images/products/cropped/{$this['code']}.jpg", ...$additionalImages];
+    }
+
+    public function getPreviews(): array
+    {
+        $additionalPreviewsPath = storage_path('app/public/images/products/s220/add');
+        $additionalPreviews = array_filter(scandir($additionalPreviewsPath),
+            fn($v) => str_starts_with($v, $this['code']));
+        $additionalPreviews = array_map(fn($v) => "/storage/images/products/s220/add/$v",$additionalPreviews);
+
+        return ["/storage/images/products/s220/{$this['code']}.jpg", ...$additionalPreviews];
+    }
+
     /**
      * MEILISEARCH
      * Get the indexable data array for the model.

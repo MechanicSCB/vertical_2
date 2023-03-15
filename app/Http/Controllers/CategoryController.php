@@ -39,7 +39,6 @@ class CategoryController extends Controller
         $products = $productsFilteredQuery
             ->select(['id', 'code', 'price', 'slug', 'name', 'availability'])
             ->paginate(34)->onEachSide(1)->withQueryString();
-        //df(tmr(@$this->start), $categoryNode);
 
         $time = str_replace('time = ', '', tmr());
 
