@@ -1,6 +1,6 @@
 <script setup>
 import Flash from "./Partials/Flash.vue";
-import LeftMenu from "./Partials/LeftMenu.vue";
+import LeftMenu from "./Partials/AdminLeftMenu.vue";
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup>
-import LeftMenuItem from "./LeftMenuItem.vue";
+import LeftMenuItem from "./AdminLeftMenuItem.vue";
 import LogoMin from "../../Svg/LogoMin.vue";
 </script>
 

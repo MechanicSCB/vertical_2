@@ -1,11 +1,11 @@
 <script setup>
-import {ref} from "vue";
+import {inject} from "vue";
 
-let isOpen = ref(false);
+let showMobileMenu = inject('showMobileMenu')
 </script>
 
 <template>
-    <div class="hamburger flex flex-col w-7 gap-y-1" @click="isOpen = !isOpen" :class="{'menu-open': isOpen}">
+    <div class="hamburger cursor-pointer flex flex-col w-7 gap-y-1" :class="{'menu-open': showMobileMenu}">
         <i/>
         <i/>
         <i/>
