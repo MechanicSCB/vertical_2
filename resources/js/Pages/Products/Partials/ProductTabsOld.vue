@@ -1,7 +1,6 @@
 <script setup>
 import {provide, ref} from "vue";
 import TabBookmark from "./TabBookmark.vue";
-import TabBookmarkSmall from "./TabBookmarkSmall.vue";
 
 let props = defineProps({product: Object});
 
@@ -26,9 +25,7 @@ provide('activeTab', activeTab)
 
         <!-- TAB CONTENTS  -->
         <div class="mt-9 text-ui-text-secondary text-[15px] font-semibold">
-            <TabBookmarkSmall tabName="description">Описание</TabBookmarkSmall>
             <div v-if="activeTab==='description'" v-html="product.description"/>
-            <TabBookmarkSmall tabName="params">Характеристики</TabBookmarkSmall>
             <div v-if="activeTab==='params'">
                 <div v-for="(value,param) in JSON.parse(product.params)"
                      class="h-[54px] border-t flex items-center grid grid-cols-2 hover:bg-ui-light"
@@ -36,7 +33,6 @@ provide('activeTab', activeTab)
                     <span class="text-ui-text-primary font-bold">{{ param }}</span><span>{{ value }}</span>
                 </div>
             </div>
-            <TabBookmarkSmall tabName="warranties">Гарантия</TabBookmarkSmall>
             <div v-if="activeTab==='warranties'">
                 Если до истечения гарантийного срока в товаре обнаружатся недостатки, Вы можете вернуть его продавцу и
                 получить назад деньги, заменить товар на такой же без дефектов или на другую продукцию с перерасчетом
@@ -51,7 +47,6 @@ provide('activeTab', activeTab)
                     Подробнее о гарантийных обязательствах
                 </Link>
             </div>
-            <TabBookmarkSmall tabName="shipment">Доставка</TabBookmarkSmall>
             <div v-if="activeTab==='shipment'" class="flex flex-col gap-y-6">
                 <p>Доставка товаров производится с нашего склада. Доступные варианты:</p>
                 <ol class="list-decimal flex flex-col gap-y-6">
@@ -74,7 +69,6 @@ provide('activeTab', activeTab)
                     Подробнее о доставке и самовывозе
                 </Link>
             </div>
-            <TabBookmarkSmall tabName="payments">Оплата</TabBookmarkSmall>
             <div v-if="activeTab==='payments'" class="flex flex-col gap-y-6">
                 <h3 style="font-size: 36px; color: #000000; margin-bottom: 0;">Способы оплаты</h3>
                 <p>Вы можете оплатить заказанный в Интернет-магазине товар несколькими способами:</p>
@@ -97,7 +91,6 @@ provide('activeTab', activeTab)
                     </li>
                 </ul>
             </div>
-            <TabBookmarkSmall tabName="replies">Отзывы</TabBookmarkSmall>
             <div v-if="activeTab==='replies'" class="flex flex-col gap-y-6">
                 <div v-for="reply in [1,2]" class="reply px-4 py-5 bg-ui-light border">
                     <div class="flex"><img v-for="star in [1,1,1,1,1]" src="/images/star.png" alt=""></div>

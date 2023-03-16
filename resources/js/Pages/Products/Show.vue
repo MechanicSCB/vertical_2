@@ -24,17 +24,17 @@ function decrementQuantity(){
     <Breadcrumbs :breadcrumbs="breadcrumbs"/>
 
 
-    <div class="mt-6 mx-auto px-9 max-w-[1656px]">
+    <div class="mt-6 mx-auto md:px-9 px-3 max-w-[1656px]">
         <!--  IMAGE/BUY CARD  -->
-        <div class="mt-10 flex md:flex-row flex-col gap-8">
+        <div class="mt-10 flex lg:flex-row flex-col gap-8">
             <!--  LEFT  -->
-            <div class="xl:w-1/3 md:w-1/2 w-full">
+            <div class="2xl:w-5/12 lg:w-1/2 w-full">
                 <ProductImageBlock :product="product"/>
             </div>
 
             <!--  RIGHT  -->
-            <div class="xl:w-2/3 md:w-1/2 w-full">
-                <h1 class="text-5xl font-semibold" :title="product.name">{{ product.name }}</h1>
+            <div class="2xl:w-7/12 lg:w-1/2 w-full">
+                <h1 class="lg:text-5xl md:text-4xl xs:text-3xl text-xl font-semibold" :title="product.name">{{ product.name }}</h1>
 
                 <!-- CODE/RATING -->
                 <div class="mt-3 flex flex-col text-ui-text-secondary">
