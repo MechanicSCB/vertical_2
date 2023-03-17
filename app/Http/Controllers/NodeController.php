@@ -15,16 +15,21 @@ class NodeController extends Controller
 {
     public function index(): Response|ResponseFactory
     {
+        $tree['nodes'] = $this->tree();
+
+        return inertia('Admin/Nodes/Index', compact('tree'));
+    }
+
+    public function tree(): array
+    {
         $nodes = DB::table('nodes')
             ->join('categories','category_id','=','categories.id')
             ->orderBy('level') // if use getTree or data_set in getTreeRec nodes must be sorted by level
             ->orderBy('order')
             ->get(['nodes.id','parent_path', 'category_id', 'categories.slug', 'categories.title', 'path', 'level', 'order']);
 
-        $tree['nodes'] = (new TreeHandler())->getTree(stdToArray($nodes));
-        //$tree['nodes'] = (new TreeHandler())->getTreeRec(stdToArray($nodes));
-
-        return inertia('Admin/Nodes/Index', compact('tree'));
+        return (new TreeHandler())->getTree(stdToArray($nodes));
+        //return (new TreeHandler())->getTreeRec(stdToArray($nodes));
     }
 
     public function copy(Node $targetNode, Node $destNode): RedirectResponse

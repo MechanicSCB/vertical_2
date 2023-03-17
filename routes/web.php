@@ -72,7 +72,7 @@ Route::get('/admin/nodes', [NodeController::class, 'index'])->name('admin.nodes.
 //Route::post('/admin/nodes',[AdminNodeController::class, 'store'])->name('admin.nodes.store');
 //Route::delete('/admin/nodes/{node}',[AdminNodeController::class, 'destroy'])->name('admin.nodes.destroy');
 // TODO: add admin middleware
-Route::get('/tree', [NodeController::class, 'index'])->name('nodes.index');
+Route::get('/tree', [NodeController::class, 'tree'])->name('nodes.tree');
 Route::post('/nodes/copy/{target_node}/to/{dest_node}', [NodeController::class, 'copy'])->name('nodes.copy');
 Route::post('/nodes/move/{target_node}/to/{dest_node}', [NodeController::class, 'move'])->name('nodes.move');
 Route::post('/nodes/reorder/{target_node}/to/{dest_node}', [NodeController::class, 'reorder'])->name('nodes.reorder');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\NodesHandler;
 use App\Classes\PaginateHandler;
 use App\Http\Requests\StoreProductRequest;
 use App\Models\Product;
@@ -15,9 +16,15 @@ class AdminProductController extends Controller
     public function index(Request $request): Response|ResponseFactory
     {
         $query = Product::query();
+        $query->with('category:id,title');
 
         if(strlen($search = $request['search'])){
-            $query->orwhereFullText('name', $search, ['language' => 'russian']);
+            $query->whereFullText('name', $search, ['language' => 'russian']);
+        }
+
+        if(count($request['nodes'] ?? [])){
+            $categoriesIds = (new NodesHandler())->getNodesCategoriesIds($request['nodes']);
+            $query->whereIn('category_id', $categoriesIds);
         }
 
         $query->orderByDesc('updated_at');
