@@ -34,9 +34,13 @@ class CategoryController extends Controller
         $productsQuery = $this->getProductsQuery($categoryNode['path']);
         //Cache::forget("{$categoryNode['path']}_filterData");
         $filterData = Cache::rememberForever("{$categoryNode['path']}_filterData", fn() => $this->getFilterData(clone($productsQuery)));
+        //$filterData = $this->getFilterData(clone($productsQuery));
         $filterData['form'] = request()->all();
-        $productsFilteredQuery = $this->getProductsFilteredQuery($productsQuery, $filterData);
-        $products = $productsFilteredQuery
+        $productsFilteredQuery = $this->getProductsFilteredQuery(clone($productsQuery), $filterData);
+        // TODO ref to cache filter after
+        //$filterData['after'] = $this->getFilterData(clone($productsFilteredQuery));
+
+        $products = clone($productsFilteredQuery)
             ->select(['id', 'code', 'price', 'slug', 'name', 'availability'])
             ->paginate(34)->onEachSide(1)->withQueryString();
 
@@ -61,11 +65,12 @@ class CategoryController extends Controller
     {
         // TODO deactivate unavailable options after applying the filter
         $filterData['sort_options'] = config('filter.sort_options');
-        $filterData['minPrice'] = (clone($productsQuery))->orderBy('price')->first('price')?->price ?? 0;
-        $filterData['maxPrice'] = (clone($productsQuery))->orderByDesc('price')->first('price')?->price ?? 0;
-        $filterData['vendors'] = (clone($productsQuery))->distinct()->orderBy('vendor')->pluck('vendor')->filter()->values();
+        $filterData['minPrice'] = (clone($productsQuery))->reorder()->orderBy('price')->first('price')?->price ?? 0;
+        $filterData['maxPrice'] = (clone($productsQuery))->reorder()->orderByDesc('price')->first('price')?->price ?? 0;
+        //$filterData['vendors'] = (clone($productsQuery))->distinct()->orderBy('vendor')->pluck('vendor')->filter()->values();
 
         $allParams = (clone($productsQuery))->pluck('params')->toArray();
+
         $filterData['params'] = [];
 
         foreach ($allParams as $productParams) {
@@ -79,12 +84,12 @@ class CategoryController extends Controller
         $filterData['params'] = array_map('array_values', $filterData['params']);
 
         // TODO sort the parameters by importance and change the condition for limiting the number of parameters
-        if (count($filterData['params']) > 20) {
-            $mainParamKeys = ['Бренд', 'Тип товара', 'Серия'];
-            $filterData['params'] = array_filter($filterData['params'],
-                fn($v, $k) => count($v) > 15
-                    || in_array($k, $mainParamKeys), ARRAY_FILTER_USE_BOTH);
-        }
+        //if (count($filterData['params']) > 20) {
+        //    $mainParamKeys = ['Бренд', 'Тип товара', 'Серия'];
+        //    $filterData['params'] = array_filter($filterData['params'],
+        //        fn($v, $k) => count($v) > 15
+        //            || in_array($k, $mainParamKeys), ARRAY_FILTER_USE_BOTH);
+        //}
 
         return $filterData;
     }
