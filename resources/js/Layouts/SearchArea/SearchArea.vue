@@ -28,10 +28,10 @@ function sortedByChildren(children) {
 <template>
     <div id="search_area">
         <!-- Transparent Back -->
-        <div @click="showSearchArea=false" class="fixed top-0 left-0 z-50 w-full h-screen bg-[rgba(0,0,0,0.3)]"></div>
+        <div @click="showSearchArea=false" class="fixed top-0 left-0 z-[75] w-full h-screen bg-[rgba(0,0,0,0.3)]"></div>
 
         <!-- Search Area -->
-        <div @click.stop class="absolute z-50 top-8 left-0 right-0 mx-auto max-w-[1200px] bg-ui-body rounded">
+        <div @click.stop class="absolute z-[75] top-8 left-0 right-0 mx-auto max-w-[1200px] bg-ui-body rounded">
             <div class="flex">
                 <div class="relative my-8 mx-24 w-full h-12 rounded flex">
                     <div class="text-lg font-bold w-32 h-full bg-ui-accent_light justify-center flex items-center shrink-0">

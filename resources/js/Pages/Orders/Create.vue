@@ -10,10 +10,14 @@ let form = useForm({
     phone:'',
     email:'',
     whatsapp:false,
-    cart:cart,
+    cart:{}
 });
 
+
 function submit(){
+    form.cart.products = cart.products;
+    form.cart.discount = cart.discount;
+    form.cart.orderSum = cart.orderSum;
     form.post(route('orders.store'));
 }
 </script>
@@ -89,6 +93,7 @@ function submit(){
             <!-- Order Card -->
             <div class="sticky top-0 pt-10 h-fit max-w-[360px] px-7 border rounded-3xl pb-5 w-full md:w-1/3 2xl:w-1/4">
                 <div class="text-xl font-semibold">Товаров: {{ Object.keys(cart.products).length }}</div>
+
                 <!-- Price Rows -->
                 <div class="mt-6 font-semibold">
                     <div class="flex justify-between border-b border-ui-text-primary pb-4">
@@ -107,5 +112,4 @@ function submit(){
             </div>
         </div>
     </div>
-
 </template>

@@ -43,6 +43,8 @@ class OrderController extends Controller
             'cart' => json_encode($cart),
         ]);
 
+        // TODO change cart to order
+
         return back()->with('success', __('flash.successfully_created'));
     }
 

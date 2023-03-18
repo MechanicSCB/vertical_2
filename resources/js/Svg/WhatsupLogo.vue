@@ -6,4 +6,3 @@
               fill="#FDFDFD"/>
     </svg>
 </template>
-

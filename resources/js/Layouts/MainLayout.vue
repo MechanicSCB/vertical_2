@@ -6,6 +6,7 @@ import Footer from "./Partials/Footer.vue";
 import Breadcrumbs from "./Partials/Breadcrumbs.vue";
 import SendMessage from "./Partials/SendMessage.vue";
 import Flash from "./Partials/Flash.vue";
+import HeaderSmall from "./Partials/HeaderSmall.vue";
 import {ref, provide} from "vue";
 
 let showSearchArea = ref(false);
@@ -16,6 +17,7 @@ provide('showMobileMenu', showMobileMenu)
 
 <template>
     <Header/>
+    <HeaderSmall/>
     <MobileMenu v-if="showMobileMenu"/>
     <SearchArea v-show="showSearchArea"/>
     <div :class="{'fixed':showSearchArea}">
