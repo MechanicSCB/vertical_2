@@ -10,6 +10,7 @@ import {inject, onMounted, ref} from "vue";
 import {useCartStore} from "../../Stores/CartStore.js";
 
 let cart = useCartStore();
+cart.getProducts();
 
 let showSearchArea = inject('showSearchArea');
 let showMobileMenu = inject('showMobileMenu');
@@ -23,14 +24,13 @@ onMounted(() => {
 let handleScroll = function (event) {
     if (window.pageYOffset > 150) {
         isScrolled.value = true;
-        // document.body.classList.add("scrolling");
     } else {
         isScrolled.value = false;
-        // document.body.classList.remove("scrolling");
     }
 }
 </script>
 <template>
+    <!-- No Scroll -->
     <div class="relative xl:block hidden z-[60] top-0 mt-[25px] h-[145px] bg-ui-body">
         <div class="mx-auto px-9 w-full max-w-[1656px]">
         <!-- Top Row -->
@@ -120,6 +120,7 @@ let handleScroll = function (event) {
     </div>
     </div>
 
+    <!-- TODO ref -->
     <!-- Fixed -->
     <div v-if="isScrolled" class="fixed z-[60] xl:block hidden top-0 w-full h-[106px] bg-ui-body  shadow-lg">
         <div class="mx-auto px-9 w-full max-w-[1656px]">

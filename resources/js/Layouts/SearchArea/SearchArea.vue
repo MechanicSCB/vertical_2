@@ -43,13 +43,13 @@ function sortedByChildren(children) {
                             <input @input="getSearchResults()" v-model="searchString"
                                    class="px-6 border-0 w-full bg-ui-accent_light  h-full text-lg focus:ring-0"
                                    placeholder="Что вы хотите найти?" type="text">
-                            <button @click="searchString = '';searchResults = {}" class="-ml-[70px] bg-ui-text-secondary rounded-full w-5 h-5 fill-ui-text-accent_inverse">
+                            <button v-if="searchString" @click="searchString = '';searchResults = {}" class="-ml-[70px] bg-gray-300 rounded-full w-5 h-5 fill-ui-text-accent_inverse">
                                 <CloseIcon/>
                             </button>
                         </div>
 
                         <!-- SEARCH RESULTS-->
-                        <div v-if="Object.keys(searchResults).length"
+                        <div v-if="searchString"
                              class="bg-ui-body px-6 overflow-y-auto rounded-b pb-5 mb-10">
 
                             <div class="text-sm">
