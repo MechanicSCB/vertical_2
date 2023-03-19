@@ -14,7 +14,7 @@ class Node extends Model
     use HasFactory;
 
     public static string $separator = '.';
-    // TODO? remove? used in admin categories table
+
     protected $appends=['url'];
 
     // Relations
@@ -32,10 +32,7 @@ class Node extends Model
             ->with('category:id,slug,title')
             ->where('parent_path','=', $path)
             ->orderBy('order')
-            ->get(['id','path','parent_path','category_id',
-                   // TODO temp
-                   'order',
-                ])
+            ->get(['id','path','parent_path','category_id'])
         ;
 
         return Attribute::make(
@@ -71,27 +68,28 @@ class Node extends Model
 
     protected function image(): Attribute
     {
-        $imagePath = "/storage/images/categories/{$this->category->id}.jpg";
+        $imagePath = "/storage/images/categories/{$this->category_id}.jpg";
 
+        // TODO ref
         if (! Storage::exists(str_replace('/storage/', '/public/', $imagePath))) {
             $imagePath = "/storage/images/categories/1572.jpg";
 
             // TODO slow! must be removed!
-            $product = Product::query()->where('category_id', $this->category->id)->first(['code']);
+            $product = Product::query()->where('category_id', $this->category_id)->first(['code']);
 
             if($product === null){
                 $imagePath = $this->children->first()->image ?? "/storage/images/categories/1572.jpg";
 
                 if (Storage::exists(str_replace('/storage/', '/public/', $imagePath))) {
                     if(! str_ends_with($imagePath, '/1572.jpg')){
-                        copy(storage_path("app/public/images/".Str::afterLast($imagePath,'images/')), storage_path("app/public/images/categories/{$this->category->id}.jpg"));
+                        copy(storage_path("app/public/images/".Str::afterLast($imagePath,'images/')), storage_path("app/public/images/categories/{$this->category_id}.jpg"));
                     }
                 }
             }else{
                 $imagePath = "/storage/images/products/s220/{$product['code']}.jpg";
 
                 if (Storage::exists(str_replace('/storage/', '/public/', $imagePath))) {
-                    copy(storage_path("app/public/images/products/s220/{$product['code']}.jpg"), storage_path("app/public/images/categories/{$this->category->id}.jpg"));
+                    copy(storage_path("app/public/images/products/s220/{$product['code']}.jpg"), storage_path("app/public/images/categories/{$this->category_id}.jpg"));
                 }
             }
         }

@@ -15,18 +15,26 @@ class Scraper
 {
     public function getProductsImages()
     {
+        dd(tmr(),777);
         set_time_limit(16000);
-        $old = json_decode(Storage::get("data/images/old_codes.json"),1);
-        $existed = Storage::files('data/images/1');
-        $existedCodes = array_map(fn($v) => intval(Str::before(Str::afterLast($v, '/'), '.')), $existed);
-        $existedCodes = [...$old, ...$existedCodes];
-        //df(tmr(@$this->start), count($existedCodes));
+        // $existed = Storage::files('public/images/products/1');
+        // $existedCodes = array_map(fn($v) => intval(Str::before(Str::afterLast($v, '/'), '.')), $existed);
+        // $failed_1 = Storage::files('public/images/products/failed_1');
+        // $failedCodes = array_map(fn($v) => intval(Str::before(Str::afterLast($v, '/'), '_1.')), $failed_1);
 
-        $productCodes = DB::table('products')->whereNotIn('code',$existedCodes)->pluck('code')->toArray();
+        $productCodes = DB::table('products')
+            // ->whereNotIn('code',$existedCodes)
+            ->where('image_count', '>', 11)
+            ->pluck('code')
+            ->toArray();
+
+        // $productCodes = [...$productCodes, ...$failedCodes];
+        df(tmr(@$this->start), count($productCodes),$productCodes);
 
         foreach (array_chunk($productCodes,50) as $chunk){
             $responses = Http::pool(function (Pool $pool) use ($chunk) {
                 foreach ($chunk as $productCode) {
+                    $productCode .= '_10';
                     $pool->as($productCode)->timeout(60)->get("https://vertical.ru/upload/external/$productCode.jpg");
                 }
             });
@@ -38,7 +46,7 @@ class Scraper
                     continue;
                 }
 
-                Storage::put("data/images/1/$productCode.jpg", $response->body());
+                Storage::put("public/images/products/1/$productCode.jpg", $response->body());
             }
         }
 
@@ -129,6 +137,5 @@ class Scraper
 
         df(tmr(@$this->start), 'scraper');
     }
-
 
 }

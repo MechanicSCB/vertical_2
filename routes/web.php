@@ -22,8 +22,9 @@ use Inertia\Inertia;
 |
 */
 
-//Route::get('/test', [\App\Dev\Parser::class,'run']);
-Route::get('/reverse', [\Database\Seeders\OrderSeeder::class,'run']);
+Route::get('/test', [\App\Dev\ImageHandler::class,'test']);
+Route::get('/seed', [\Database\Seeders\WordSeeder::class,'run']);
+//Route::get('/reverse', [\Database\Seeders\OrderSeeder::class,'run']);
 //Route::get('/factory', [\Database\Factories\OrderFactory::class,'definition']);
 
 Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
@@ -45,10 +46,6 @@ Route::post('/products_data', [ProductController::class, 'getData'])->name('prod
 // Order
 Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
 Route::post('/orders',[OrderController::class, 'store'])->name('orders.store');
-
-
-// SEARCH
-Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 // ADMIN PANEL
 Route::get('/admin', [AdminCategoryController::class, 'index'])->name('admin.index');
@@ -89,7 +86,8 @@ Route::delete('/admin/orders/{order}',[OrderController::class, 'destroy'])->name
 
 
 // SEARCH
-Route::post('/get-search-results',[SearchController::class, 'getSearchResults'])->name('getSearchResults');
+Route::post('/get-search-results',[SearchController::class, 'getQuickSearchResults'])->name('getSearchResults');
+Route::get('/get-search-results',[SearchController::class, 'getQuickSearchResults']);
 
 
 

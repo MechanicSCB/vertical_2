@@ -6,6 +6,7 @@ import FilterIcon from "../../../Svg/FilterIcon.vue";
 import Multiselect from "./Multiselect.vue";
 import noUiSlider from 'nouislider';
 import 'nouislider/dist/nouislider.css';
+import CloseIcon from "../../../Svg/CloseIcon.vue";
 
 let props = defineProps({
     filterData: Object,
@@ -47,6 +48,11 @@ function changePriceInput(){
     slider.noUiSlider.set([(form.priceFrom + '').replace(/\D/g,''), (form.priceTo + '').replace(/\D/g,'')]);
 }
 
+function replaceWordToHintAndSubmit(word,hint) {
+    form.search = form.search.replace(word,hint);
+    submit();
+}
+
 function submit() {
     // let url = router.page.url.split('?')[0];
     let url = router.page.props.ziggy.location;
@@ -77,8 +83,25 @@ function submit() {
             </select>
 
             <!-- SEARCH INPUT -->
-            <input @input="submit" v-model="form.search" type="text" placeholder="Что вы хотите найти?"
-                   class="mt-3 w-full border-none !ring-0 rounded bg-ui-light text-ui-text-secondary mr-3">
+            <div class="relative">
+                <div v-if="form.search" @click="form.search='';submit()"
+                     class="absolute top-7 -ml-5 w-4 cursor-pointer fill-ui-text-secondary hover:fill-ui-text-accent">
+                    <CloseIcon class=""/>
+                </div>
+
+                <input @input="submit" v-model="form.search" type="text" placeholder="Что вы хотите найти?"
+                       class="mt-4 w-full rounded border-none !ring-0 bg-gray-200 text-ui-text-secondary">
+            </div>
+
+            <!-- SEARCH HINTS -->
+            <div>
+                <div v-for="(wordHints, word) in filterData.hints ?? []">
+                    <button v-for="hint in wordHints"
+                        @click="replaceWordToHintAndSubmit(word, hint)" class="text-sm mr-2"
+                    >{{ hint }}
+                    </button>
+                </div>
+            </div>
 
             <!-- PRICE FILTER -->
             <!-- TODO? не отправлять в фильтр минимальное и максимальное значение -->

@@ -1,10 +1,9 @@
 <?php
 
 
-namespace App\Classes\Meili;
+namespace App\Classes\Search\Meili;
 
 
-use Illuminate\Support\Facades\Http;
 use Meilisearch\Client;
 
 class MeiliClientHandler

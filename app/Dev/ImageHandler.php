@@ -8,26 +8,28 @@ use App\Models\Product;
 use Exception;
 use GdImage;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ImageHandler
 {
     public function test()
     {
-        df(tmr(@$this->start), 'ImageHandler');
-        set_time_limit(6000);
-        $srcDir = storage_path('app/public/images/products/cropped/');
-        $storeDir = storage_path('app/public/images/products/s220/');
+        dd(tmr(),'ImageHandler');
+
+        set_time_limit(60000);
+        $srcDir = storage_path('app/public/images/products/cropped/add/');
+        $storeDir = storage_path('app/public/images/products/s220/add/');
         $filenames = array_values(array_filter(scandir($srcDir), fn($v) => str_ends_with($v, '.jpg')));
-        $s220 = array_values(array_filter(scandir($storeDir), fn($v) => str_ends_with($v, '.jpg')));
-        $filenames = array_diff($filenames, $s220);
+        // $s220 = array_values(array_filter(scandir($storeDir), fn($v) => str_ends_with($v, '.jpg')));
+        // $filenames = array_diff($filenames, $s220);
         //df(tmr(@$this->start), count($filenames), count($s220));
-        //$filenames = array_slice($filenames,0,1000);
-        //df(tmr(@$this->start), $filenames);
+        // $filenames = array_slice($filenames,0,100);
+        // df(tmr(@$this->start), $filenames);
 
         foreach ($filenames as $filename){
             $srcPath = $srcDir.$filename;
             $storePath = $storeDir .$filename;
-            //$this->cropImage($srcPath,$storePath);
+            // $this->cropImage($srcPath,$storePath);
             $this->copyResizeJpgAspectRatio($srcPath, 220, 220,$storePath);
         }
         //

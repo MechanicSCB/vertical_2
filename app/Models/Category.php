@@ -62,7 +62,7 @@ class Category extends Model
         return [
             'title' => $this->title,
             'slug' => $this->slug,
-            'parent_id' => $this->parent_id,
+            'nodes' => $this->nodes,
         ];
     }
 }

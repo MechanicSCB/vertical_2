@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Classes\Meili;
+namespace App\Classes\Search\Meili\old;
 
 
 use Illuminate\Support\Facades\Http;

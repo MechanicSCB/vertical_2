@@ -17,7 +17,6 @@ class AdminCategoryController extends Controller
         $query = Category::query();
 
         if (strlen($search = $request['search'])) {
-            //$query->where('title', 'ilike', "%$search%");
             $query->whereFullText('title', $search, ['language' => 'russian']);
         }
 

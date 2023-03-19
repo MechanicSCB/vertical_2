@@ -1,6 +1,4 @@
 <script setup>
-// TODO fix page max in Vue (если, текущая страница больше максимальной, сбросить на последнюю или первую)
-
 import Breadcrumbs from "../../Layouts/Partials/Breadcrumbs.vue";
 import {router} from "@inertiajs/vue3";
 import CategoriesGrid from "./Partials/CategoriesGrid.vue";
@@ -22,6 +20,8 @@ let props = defineProps({
     <div class="mx-auto px-9 max-w-[1656px]">
         <h1 class="mt-8 lg:text-5xl md:text-4xl md:text-left text-center text-3xl font-semibold md:mb-20 mb-12">
             {{ categoryNode.title }}
+            <!-- TODO TEMP -->
+            <span class="text-xs text-ui-text-secondary">({{ time }})</span>
         </h1>
 
         <CategoriesGrid :categories="subCategories"/>

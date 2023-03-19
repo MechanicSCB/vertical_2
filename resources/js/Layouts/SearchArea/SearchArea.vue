@@ -1,29 +1,29 @@
 <script setup>
-import {ref, inject, reactive} from "vue";
+import {ref, inject, reactive, watch, provide, onMounted} from "vue";
 import MagnifyIcon from "../../Svg/MagnifyIcon.vue";
 import CloseIcon from "../../Svg/CloseIcon.vue";
+import SearchResults from "@/Layouts/SearchArea/Partials/SearchResults.vue";
+import {throttle} from "lodash";
 
 let showSearchArea = inject('showSearchArea');
 let searchResults = reactive({});
 let searchString = ref('');
+let showedResults = ref('meili');
+const searchInputEl = ref(null)
+
+provide('searchString',searchString);
+
+onMounted(() => {
+    searchInputEl.value.focus();
+    console.log(searchInputEl.value);
+    watch(showSearchArea, searchInputEl.value.focus());
+});
 
 async function getSearchResults() {
     searchResults.value = (await axios.post('/get-search-results', {searchString: searchString.value})).data;
 }
 
-function sortedByChildren(children) {
-    let sortable = [];
-
-    for (let item of Object.values(children)) {
-        sortable.push(item);
-    }
-
-    sortable.sort(function (a, b) {
-        return Object.keys(b.children ?? []).length - Object.keys(a.children ?? []).length;
-    });
-
-    return sortable;
-}
+watch(searchString, throttle(() =>getSearchResults() , 500));
 </script>
 <template>
     <div id="search_area">
@@ -40,42 +40,33 @@ function sortedByChildren(children) {
                     <div class="w-[1px] bg-ui-text-light my-2"></div>
                     <div class="w-full">
                         <div class="flex h-full items-center">
-                            <input @input="getSearchResults()" v-model="searchString"
-                                   class="px-6 border-0 w-full bg-ui-accent_light  h-full text-lg focus:ring-0"
-                                   placeholder="Что вы хотите найти?" type="text">
+                            <input ref="searchInputEl" v-model="searchString" placeholder="Что вы хотите найти?" type="text"
+                                   class="px-6 border-0 w-full bg-ui-accent_light  h-full text-lg focus:ring-0">
                             <button v-if="searchString" @click="searchString = '';searchResults = {}" class="-ml-[70px] bg-gray-300 rounded-full w-5 h-5 fill-ui-text-accent_inverse">
                                 <CloseIcon/>
                             </button>
                         </div>
 
                         <!-- SEARCH RESULTS-->
-                        <div v-if="searchString"
-                             class="bg-ui-body px-6 overflow-y-auto rounded-b pb-5 mb-10">
+                        <div v-if="Object.keys(searchResults).length" class="bg-ui-body rounded-b">
+                            <!-- SEARCH RESULTS TAB LABELS -->
+                            <div class="mt-2 px-6 flex gap-4">
+                                <div @click="showedResults='meili'"
+                                     class="px-3 cursor-pointer rounded-t border border-b-0"
+                                     :class="showedResults==='meili' ? 'text-ui-text-accent':'text-ui-text-secondary border-[rgba(0,0,0,0)]'"
+                                >meili</div>
+                                <div @click="showedResults='pgsql'"
+                                     class="px-3 cursor-pointer rounded-t border border-b-0"
+                                     :class="showedResults==='pgsql' ? 'text-ui-text-accent':'text-ui-text-secondary border-[rgba(0,0,0,0)]'"
+                                >pgsql</div>
+                            </div>
 
-                            <div class="text-sm">
-                                <!-- Categories -->
-                                <div class="my-3">Всего категорий {{ searchResults.value.categories.total }}</div>
-                                <div v-if="searchResults.value.categories?.total" class="max-h-48 overflow-y-auto">
-                                    <div v-for="category in searchResults.value.categories?.data ?? []">
-                                        <div class="font-semibold">{{ category.title }} ({{ category.slug }})</div>
-                                    </div>
-                                </div>
-
-                                <!-- Products -->
-                                <div class="my-2">Товаров найдено {{ searchResults.value.products?.total ?? '--' }}</div>
-                                <div class="max-h-48 overflow-y-auto">
-                                    <div v-for="product in searchResults.value.products?.data ?? []">
-                                        <div class="font-semibold cursor-pointer">{{ product.name }}</div>
-                                    </div>
-                                </div>
-
-                                <!-- Facets -->
-                                <div class="my-3">По категориям, в {{ facetLen }}</div>
-                                <div v-if="facetLen = Object.keys(facet = searchResults.value.facet).length" class="max-h-64 overflow-y-auto">
-                                    <div v-for="category in sortedByChildren(facet)">
-                                        <div class="font-semibold">{{ category.title }} ({{ category.itemsCount }})</div>
-                                    </div>
-                                </div>
+                            <!-- SEARCH RESULTS TABS CONTENT -->
+                            <div class="px-6">
+                                <SearchResults v-show="showedResults === 'meili'"
+                                               :results="searchResults?.value?.meili ?? {}"/>
+                                <SearchResults v-show="showedResults === 'pgsql'"
+                                               :results="searchResults?.value?.pgsql ?? {}"/>
                             </div>
                         </div>
                     </div>

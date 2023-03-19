@@ -138,7 +138,7 @@ return [
         'index-settings' => [
             Product::class => [
                 'filterableAttributes' => ['category_id', 'price','vendor'],
-                'searchableAttributes' => ['name','vendor', 'params', 'description'],
+                'searchableAttributes' => ['name','vendor', 'params', 'description', 'code'],
                 'synonyms' => [
                     'зажигалка' => ['пьезозажигалка'],
                     'болгарка' => ['угловая шлифмашина', 'угловая шлифовальная машина', 'ушм'],

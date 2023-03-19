@@ -1,10 +1,9 @@
 <?php
 
 
-namespace App\Classes\Meili;
+namespace App\Classes\Search\Meili\old;
 
 
-use App\Models\Category;
 use App\Models\Product;
 
 class MeiliScoutHandler

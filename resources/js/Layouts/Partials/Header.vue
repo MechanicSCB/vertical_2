@@ -1,13 +1,13 @@
 <script setup>
-import LogoFull from "../../Svg/LogoFull.vue";
-import HeartIcon from "../../Svg/HeartIcon.vue";
-import CartIcon from "../../Svg/CartIcon.vue";
-import MagnifyIcon from "../../Svg/MagnifyIcon.vue";
-import GeolocationIcon from "../../Svg/GeolocationIcon.vue";
-import WhatsupHeaderLogo from "../../Svg/WhatsupHeaderLogo.vue";
-import CatalogRowsIcon from "../../Svg/CatalogRowsIcon.vue";
+import LogoFull from "@/Svg/LogoFull.vue";
+import HeartIcon from "@/Svg/HeartIcon.vue";
+import CartIcon from "@/Svg/CartIcon.vue";
+import MagnifyIcon from "@/Svg/MagnifyIcon.vue";
+import GeolocationIcon from "@/Svg/GeolocationIcon.vue";
+import WhatsupHeaderLogo from "@/Svg/WhatsupHeaderLogo.vue";
+import CatalogRowsIcon from "@/Svg/CatalogRowsIcon.vue";
 import {inject, onMounted, ref} from "vue";
-import {useCartStore} from "../../Stores/CartStore.js";
+import {useCartStore} from "@/Stores/CartStore.js";
 
 let cart = useCartStore();
 cart.getProducts();
@@ -22,7 +22,7 @@ onMounted(() => {
 });
 
 let handleScroll = function (event) {
-    if (window.pageYOffset > 150) {
+    if (window.scrollY > 150) {
         isScrolled.value = true;
     } else {
         isScrolled.value = false;
@@ -165,12 +165,14 @@ let handleScroll = function (event) {
                         <HeartIcon class="w-10 fill-ui-text-accent"/>
                     </div>
 
-                    <div class="cursor-pointer flex w-[60px] h-[60px] bg-ui-accent rounded-full items-center justify-center">
-                        <CartIcon class="fill-ui-text-accent_inverse"/>
-                    </div>
-                    <div class="ml-2 border border-ui-text-secondary w-6 h-6 text-center rounded-full flex items-center justify-center">
-                        <div class="mb-0.5 mr-0.5 text-ui-text-secondary font-semibold">{{ cart.positionsCount }}</div>
-                    </div>
+                    <Link :href="route('cart.show')" class="flex items-center">
+                        <div class="cursor-pointer flex w-[60px] h-[60px] bg-ui-accent rounded-full items-center justify-center">
+                            <CartIcon class="fill-ui-text-accent_inverse"/>
+                        </div>
+                        <div class="ml-2 border border-ui-text-secondary w-6 h-6 text-center rounded-full flex items-center justify-center">
+                            <div class="mb-0.5 mr-0.5 text-ui-text-secondary font-semibold">{{ cart.positionsCount }}</div>
+                        </div>
+                    </Link>
                 </div>
             </div>
         </div>

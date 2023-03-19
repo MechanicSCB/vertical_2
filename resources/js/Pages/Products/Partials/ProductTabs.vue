@@ -11,10 +11,8 @@ provide('activeTab', activeTab)
 </script>
 
 <template>
-    <!-- PRODUCT TABS  -->
     <div class="mt-20">
         <!-- BOOKMARKS  -->
-        <!-- TODO: Fix min screen width overflow -->
         <ul class="md:flex hidden lg:text-[23px] text-xl font-semibold gap-x-7">
             <TabBookmark tabName="description">Описание</TabBookmark>
             <TabBookmark tabName="params">Характеристики</TabBookmark>
@@ -27,7 +25,7 @@ provide('activeTab', activeTab)
         <!-- TAB CONTENTS  -->
         <div class="mt-9 text-ui-text-secondary text-[15px] font-semibold">
             <TabBookmarkSmall tabName="description">Описание</TabBookmarkSmall>
-            <div v-if="activeTab==='description'" v-html="product.description"/>
+            <div v-if="activeTab==='description'" class="description" v-html="product.description"/>
             <TabBookmarkSmall tabName="params">Характеристики</TabBookmarkSmall>
             <div v-if="activeTab==='params'">
                 <div v-for="(value,param) in JSON.parse(product.params)"
@@ -111,11 +109,13 @@ provide('activeTab', activeTab)
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </template>
-
-<style scoped>
-
+<style>
+.description h2{
+    color: var(--color-ui-text-primary);
+    font-size: 25px;
+    padding: 20px 0px;
+}
 </style>
