@@ -77,7 +77,7 @@ function filteredOptions() {
         <!-- OPTIONS LIST -->
         <div v-if="isListOpen" class="max-h-[250px] flex flex-col gap-3.5">
             <!-- SEARCH INPUT -->
-            <input v-model="search" type="text" class="border-none !ring-0 rounded bg-ui-light text-ui-text-secondary mr-3">
+            <input v-if="search !== '' || filteredOptions().length > 10" v-model="search" type="text" class="border-none !ring-0 rounded bg-ui-light text-ui-text-secondary mr-3">
 
             <div class="h-full overflow-y-auto">
                 <label @click="toggleOption(option)" class="flex items-center gap-4" v-for="option in filteredOptions()">

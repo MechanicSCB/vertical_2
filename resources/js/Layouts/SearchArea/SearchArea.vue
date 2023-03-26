@@ -15,7 +15,6 @@ provide('searchString',searchString);
 
 onMounted(() => {
     searchInputEl.value.focus();
-    console.log(searchInputEl.value);
     watch(showSearchArea, searchInputEl.value.focus());
 });
 

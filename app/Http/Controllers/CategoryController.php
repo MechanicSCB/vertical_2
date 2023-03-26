@@ -27,7 +27,7 @@ class CategoryController extends Controller
 
     public function show(string $path): Response|ResponseFactory
     {
-        // TODO check category ids integrity
+        // TODO ref - replace from controller
         $path = "catalog/$path";
         $ancestorsCategories = (new GetAncestorsCategoriesFromPath())->get($path);
         $breadcrumbs = (new GetBreadcrumbsFromUrl())->get($path, $ancestorsCategories);
