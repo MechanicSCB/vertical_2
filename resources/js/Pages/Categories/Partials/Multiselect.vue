@@ -84,7 +84,7 @@ function filteredOptions() {
                     <div class="w-5 h-5 border border-ui-text-secondary rounded shrink-0">
                         <CheckedIcon v-if="form.params[field]?.includes(option.value)" class="-mt-0.5 w-4.5 fill-ui-text-accent"/>
                     </div>
-                    {{ option.value }} ({{option.node_count}})
+                    {{ option.value }} ({{option.filtered_count ?? 'n/a'}} из {{option.node_count}})
                 </label>
             </div>
         </div>

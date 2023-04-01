@@ -24,6 +24,7 @@ class ProductFilterHandler
         $this->form = $request->all();
         $this->sortOptions = config('filter.sort_options');
         $this->allProductsParamsNamesAndValues = Cache::rememberForever('allProductsParamsNamesAndValues', fn() => $this->allProductsParamsNamesAndValues());
+        Cache::forget("nodeFilterData:{$categoryNode['path']}");
         $this->nodeFilterData = Cache::rememberForever("nodeFilterData:{$categoryNode['path']}", fn() => $this->getNodeFilterData());
     }
 
@@ -57,39 +58,64 @@ class ProductFilterHandler
     public function getFilterData(Builder $query = null): array
     {
         $filterData = $this->nodeFilterData;
-
-        // dd(tmr(), $filterData);
-        return $filterData;
-    }
-
-    protected function getQueryFilterData(Builder $query = null): array
-    {
-        $query ??= $this->getProductsFilteredQuery();
         $filterData['sort_options'] = $this->sortOptions;
-        $filterData['minPrice'] = (clone($query))->reorder()->orderBy('price')->first('price')?->price ?? 0;
-        $filterData['maxPrice'] = (clone($query))->reorder()->orderByDesc('price')->first('price')?->price ?? 0;
+        $filterData['form'] = $this->form;
 
-        $allParams = (clone($query))->pluck('params')->toArray();
+        if($filterData['form'] !== []){
+            $filtered = $this->getQueryFilterData('filtered');
+            $filterData['minPrice'] = $filtered['minPrice'] ?? $filterData['minPrice'];
+            $filterData['maxPrice'] = $filtered['maxPrice'] ?? $filterData['maxPrice'];
 
-        $filterData['params'] = [];
-
-        foreach ($allParams as $productParams) {
-            $productParams = json_decode($productParams, 1);
-
-            foreach ($productParams as $param => $value) {
-                if(array_key_exists($value, $filterData['params'][$param] ?? [])){
-                    $filterData['params'][$param][$value]['node_count'] += 1;
-                }else{
-                    $filterData['params'][$param][$value]['value'] = $value;
-                    $filterData['params'][$param][$value]['node_count'] = 1;
+            foreach ($filterData['params'] as $paramName => $paramItems){
+                foreach ($paramItems as $paramValue => $paramItem){
+                    $filterData['params'][$paramName][$paramValue]['filtered_count'] = $filtered['params'][$paramName][$paramValue]['node_count'] ?? 0;
                 }
             }
         }
 
         $filterData['params'] = array_map('array_values', $filterData['params']);
-        $filterData['form'] = $this->form;
 
         return $filterData;
+    }
+
+    protected function getQueryFilterData(string $mode = 'allNode'): array
+    {
+        if($mode === 'allNode'){
+            $query = $this->getNodeProductsQuery();
+        }else{
+            $query = $this->getProductsFilteredQuery();
+        }
+
+        $filterData['minPrice'] = (clone($query))->reorder()->orderBy('price')->first('price')?->price ?? 0;
+        $filterData['maxPrice'] = (clone($query))->reorder()->orderByDesc('price')->first('price')?->price ?? 0;
+
+        $filterData['params'] = $this->getFilterDataParams($query);
+
+        return $filterData;
+    }
+
+    protected function getFilterDataParams(Builder $query):array
+    {
+        $queriedProductsParams = (clone($query))->pluck('params')->toArray();
+
+        $filterDataParams = [];
+
+        foreach ($queriedProductsParams as $productParams) {
+            $productParams = json_decode($productParams, 1);
+
+            foreach ($productParams as $param => $value) {
+                if(array_key_exists($value, $filterDataParams[$param] ?? [])){
+                    $filterDataParams[$param][$value]['node_count'] += 1;
+                }else{
+                    $filterDataParams[$param][$value]['value'] = $value;
+                    $filterDataParams[$param][$value]['node_count'] = 1;
+                }
+            }
+        }
+
+        // $filterDataParams = array_map('array_values', $filterDataParams);
+
+        return $filterDataParams;
     }
 
     protected function getNodeProductsQuery(): Builder
@@ -185,6 +211,6 @@ class ProductFilterHandler
 
     protected function getNodeFilterData(): array
     {
-        return $this->getQueryFilterData($this->getNodeProductsQuery());
+        return $this->getQueryFilterData('allNode');
     }
 }
