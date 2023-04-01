@@ -40,7 +40,7 @@ class CategoryController extends Controller
 
         $productsFilteredQuery = $this->getProductsFilteredQuery(clone($productsQuery), $filterData);
 
-        $products = clone ($productsFilteredQuery)
+        $products = (clone ($productsFilteredQuery))
             ->select(['id', 'code', 'price', 'slug', 'name', 'availability'])
             ->paginate(34)->onEachSide(1)->withQueryString();
 
@@ -54,11 +54,14 @@ class CategoryController extends Controller
                 request()['search'] = $hints;
                 $productsFilteredQuery = $this->getProductsFilteredQuery(clone($productsQuery), $filterData);
 
-                $products = clone ($productsFilteredQuery)
+                $products = (clone ($productsFilteredQuery))
                     ->select(['id', 'code', 'price', 'slug', 'name', 'availability'])
                     ->paginate(34)->onEachSide(1)->withQueryString();
             }
         }
+
+        $filterData['after'] = $filterHandler->getFilterAfterData(clone($productsFilteredQuery));
+        // dd(tmr(),$filterData['after']);
 
         $time = str_replace('time = ', '', tmr());
 

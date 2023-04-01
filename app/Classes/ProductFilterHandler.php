@@ -11,11 +11,39 @@ class ProductFilterHandler
         $filterData['sort_options'] = config('filter.sort_options');
         $filterData['minPrice'] = (clone($productsQuery))->reorder()->orderBy('price')->first('price')?->price ?? 0;
         $filterData['maxPrice'] = (clone($productsQuery))->reorder()->orderByDesc('price')->first('price')?->price ?? 0;
-        //$filterData['vendors'] = (clone($productsQuery))->distinct()->orderBy('vendor')->pluck('vendor')->filter()->values();
 
         $allParams = (clone($productsQuery))->pluck('params')->toArray();
 
-        // $productCount = (clone($productsQuery))->count();
+        $filterData['params'] = [];
+
+        foreach ($allParams as $productParams) {
+            $productParams = json_decode($productParams, 1);
+
+            foreach ($productParams as $param => $value) {
+                if(array_key_exists($value, $filterData['params'][$param] ?? [])){
+                    $filterData['params'][$param][$value]['node_count'] += 1;
+                }else{
+                    $filterData['params'][$param][$value]['value'] = $value;
+                    $filterData['params'][$param][$value]['node_count'] = 1;
+                }
+            }
+        }
+
+        $filterData['params'] = array_map('array_values', $filterData['params']);
+
+        // dd(tmr(),$filterData,$filterData['params']['Бренд']);
+
+        return $filterData;
+    }
+
+    public function getFilterAfterData(Builder $productsQuery): array
+    {
+        $filterData['sort_options'] = config('filter.sort_options');
+        $filterData['minPrice'] = (clone($productsQuery))->reorder()->orderBy('price')->first('price')?->price ?? 0;
+        $filterData['maxPrice'] = (clone($productsQuery))->reorder()->orderByDesc('price')->first('price')?->price ?? 0;
+
+        $allParams = (clone($productsQuery))->pluck('params')->toArray();
+
 
         $filterData['params'] = [];
 
