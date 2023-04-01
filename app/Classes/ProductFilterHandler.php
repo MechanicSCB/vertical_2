@@ -24,7 +24,7 @@ class ProductFilterHandler
         $this->form = $request->all();
         $this->sortOptions = config('filter.sort_options');
         $this->allProductsParamsNamesAndValues = Cache::rememberForever('allProductsParamsNamesAndValues', fn() => $this->allProductsParamsNamesAndValues());
-        Cache::forget("nodeFilterData:{$categoryNode['path']}");
+        // Cache::forget("nodeFilterData:{$categoryNode['path']}");
         $this->nodeFilterData = Cache::rememberForever("nodeFilterData:{$categoryNode['path']}", fn() => $this->getNodeFilterData());
     }
 
@@ -65,6 +65,8 @@ class ProductFilterHandler
             $filtered = $this->getQueryFilterData('filtered');
             $filterData['minPrice'] = $filtered['minPrice'] ?? $filterData['minPrice'];
             $filterData['maxPrice'] = $filtered['maxPrice'] ?? $filterData['maxPrice'];
+            $filterData['form']['priceFrom'] = $filterData['minPrice'];
+            $filterData['form']['priceTo'] = $filterData['maxPrice'];
 
             foreach ($filterData['params'] as $paramName => $paramItems){
                 foreach ($paramItems as $paramValue => $paramItem){

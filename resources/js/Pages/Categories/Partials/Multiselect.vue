@@ -60,16 +60,18 @@ function filteredOptions() {
             </button>
 
             <!-- Selected Options -->
-            <div class="flex items-center gap-x-1 flex-wrap">
-                <div v-for="selected in form.params[field]" @click="toggleOption(selected)"
-                     class="text-xs flex h-fit items-center group cursor-pointer text-ui-text-secondary rounded border
+            <div class="flex items-center">
+                <div class="flex h-fit items-center gap-x-1 gap-y-1 flex-wrap">
+                    <div v-for="selected in form.params[field]" @click="toggleOption(selected)"
+                         class="text-xs flex h-fit items-center group cursor-pointer text-ui-text-secondary rounded border
                      hover:text-ui-text-accent pl-1 hover:border-ui-text-accent"
-                >
-                    <div>{{selected}}</div>
-                    <CloseIcon class="w-3 fill-ui-text-light group-hover:fill-ui-text-accent"/>
+                    >
+                        <div>{{selected}}</div>
+                        <CloseIcon class="w-3 fill-ui-text-light group-hover:fill-ui-text-accent"/>
+                    </div>
+                    <CloseIcon v-if="form.params[field]?.length > 3" @click="clearSelect"
+                               class="w-5 rounded-full cursor-pointer fill-ui-text-accent_inverse bg-ui-secondary hover:bg-ui-accent"/>
                 </div>
-                <CloseIcon v-if="form.params[field]?.length > 3" @click="clearSelect"
-                           class="w-5 rounded-full cursor-pointer fill-ui-text-accent_inverse bg-ui-secondary hover:bg-ui-accent"/>
             </div>
         </div>
 
