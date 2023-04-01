@@ -17,12 +17,14 @@ class ProductFilterHandler
     private array $form;
     private array $sortOptions;
     private array $allProductsParamsNamesAndValues;
+    private array $nodeFilterData;
 
     public function __construct(protected Node $categoryNode, Request $request)
     {
         $this->form = $request->all();
         $this->sortOptions = config('filter.sort_options');
         $this->allProductsParamsNamesAndValues = Cache::rememberForever('allProductsParamsNamesAndValues', fn() => $this->allProductsParamsNamesAndValues());
+        $this->nodeFilterData = Cache::rememberForever("nodeFilterData:{$categoryNode['path']}", fn() => $this->getNodeFilterData());
     }
 
     public function getPaginatedProducts(): LengthAwarePaginator
@@ -52,14 +54,22 @@ class ProductFilterHandler
         return $products;
     }
 
-    public function getFilterData(): array
+    public function getFilterData(Builder $query = null): array
     {
-        $productsQuery = $this->getProductsQuery();
-        $filterData['sort_options'] = config('filter.sort_options');
-        $filterData['minPrice'] = (clone($productsQuery))->reorder()->orderBy('price')->first('price')?->price ?? 0;
-        $filterData['maxPrice'] = (clone($productsQuery))->reorder()->orderByDesc('price')->first('price')?->price ?? 0;
+        $filterData = $this->nodeFilterData;
 
-        $allParams = (clone($productsQuery))->pluck('params')->toArray();
+        // dd(tmr(), $filterData);
+        return $filterData;
+    }
+
+    protected function getQueryFilterData(Builder $query = null): array
+    {
+        $query ??= $this->getProductsFilteredQuery();
+        $filterData['sort_options'] = $this->sortOptions;
+        $filterData['minPrice'] = (clone($query))->reorder()->orderBy('price')->first('price')?->price ?? 0;
+        $filterData['maxPrice'] = (clone($query))->reorder()->orderByDesc('price')->first('price')?->price ?? 0;
+
+        $allParams = (clone($query))->pluck('params')->toArray();
 
         $filterData['params'] = [];
 
@@ -82,7 +92,7 @@ class ProductFilterHandler
         return $filterData;
     }
 
-    protected function getProductsQuery(): Builder
+    protected function getNodeProductsQuery(): Builder
     {
         $categoryNodePath = $this->categoryNode['path'];
 
@@ -96,9 +106,9 @@ class ProductFilterHandler
         return $productsQuery;
     }
 
-    public function getProductsFilteredQuery(): Builder
+    protected function getProductsFilteredQuery(): Builder
     {
-        $productsQuery = $this->getProductsQuery();
+        $productsQuery = $this->getNodeProductsQuery();
 
         if (isset($this->form['sortBy'])) {
             $column = @$this->sortOptions[$this->form['sortBy']]['column'];
@@ -171,5 +181,10 @@ class ProductFilterHandler
         }
 
         return $allProductsParamsNamesAndValues;
+    }
+
+    protected function getNodeFilterData(): array
+    {
+        return $this->getQueryFilterData($this->getNodeProductsQuery());
     }
 }

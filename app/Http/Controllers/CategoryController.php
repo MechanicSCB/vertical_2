@@ -43,49 +43,49 @@ class CategoryController extends Controller
     }
 
 
-    public function show2(string $path): Response|ResponseFactory
-    {
-        $path = "catalog/$path";
-        $ancestorsCategories = (new GetAncestorsCategoriesFromPath())->get($path);
-        $breadcrumbs = (new GetBreadcrumbsFromUrl())->get($path, $ancestorsCategories);
-        $categoryNode = (new GetCategoryNodeFromPath())->get($path, $ancestorsCategories);
-        $subCategories = $categoryNode->children->append(['image', 'title', 'url']);
-
-        $productsQuery = $this->getProductsQuery($categoryNode['path']);
-
-        $filterHandler = new ProductFilterHandler();
-        $filterData = $filterHandler->getFilterData(clone($productsQuery));
-        $filterData['form'] = request()->all();
-
-        $productsFilteredQuery = $this->getProductsFilteredQuery(clone($productsQuery), $filterData);
-
-        $products = (clone ($productsFilteredQuery))
-            ->select(['id', 'code', 'price', 'slug', 'name', 'availability'])
-            ->paginate(34)->onEachSide(1)->withQueryString();
-
-        // if products not found try similar words
-        if (strlen(request('search') ?? '') > 2 && $products->total() === 0) {
-            $filterData['hints'] = (new PgsqlSearchHandler())->getSimilarWords(request('search'));
-
-            $hints = Arr::flatten($filterData['hints']);
-
-            if(count($hints)){
-                request()['search'] = $hints;
-                $productsFilteredQuery = $this->getProductsFilteredQuery(clone($productsQuery), $filterData);
-
-                $products = (clone ($productsFilteredQuery))
-                    ->select(['id', 'code', 'price', 'slug', 'name', 'availability'])
-                    ->paginate(34)->onEachSide(1)->withQueryString();
-            }
-        }
-
-        $filterData['after'] = $filterHandler->getFilterData(clone($productsFilteredQuery));
-        // dd(tmr(),$filterData['after']);
-
-        $time = str_replace('time = ', '', tmr());
-
-        return inertia('Categories/Show', compact('breadcrumbs', 'categoryNode', 'subCategories', 'filterData', 'products', 'time'));
-    }
+    // public function show2(string $path): Response|ResponseFactory
+    // {
+    //     $path = "catalog/$path";
+    //     $ancestorsCategories = (new GetAncestorsCategoriesFromPath())->get($path);
+    //     $breadcrumbs = (new GetBreadcrumbsFromUrl())->get($path, $ancestorsCategories);
+    //     $categoryNode = (new GetCategoryNodeFromPath())->get($path, $ancestorsCategories);
+    //     $subCategories = $categoryNode->children->append(['image', 'title', 'url']);
+    //
+    //     $productsQuery = $this->getProductsQuery($categoryNode['path']);
+    //
+    //     $filterHandler = new ProductFilterHandler();
+    //     $filterData = $filterHandler->getQueryFilterData(clone($productsQuery));
+    //     $filterData['form'] = request()->all();
+    //
+    //     $productsFilteredQuery = $this->getProductsFilteredQuery(clone($productsQuery), $filterData);
+    //
+    //     $products = (clone ($productsFilteredQuery))
+    //         ->select(['id', 'code', 'price', 'slug', 'name', 'availability'])
+    //         ->paginate(34)->onEachSide(1)->withQueryString();
+    //
+    //     // if products not found try similar words
+    //     if (strlen(request('search') ?? '') > 2 && $products->total() === 0) {
+    //         $filterData['hints'] = (new PgsqlSearchHandler())->getSimilarWords(request('search'));
+    //
+    //         $hints = Arr::flatten($filterData['hints']);
+    //
+    //         if(count($hints)){
+    //             request()['search'] = $hints;
+    //             $productsFilteredQuery = $this->getProductsFilteredQuery(clone($productsQuery), $filterData);
+    //
+    //             $products = (clone ($productsFilteredQuery))
+    //                 ->select(['id', 'code', 'price', 'slug', 'name', 'availability'])
+    //                 ->paginate(34)->onEachSide(1)->withQueryString();
+    //         }
+    //     }
+    //
+    //     $filterData['after'] = $filterHandler->getQueryFilterData(clone($productsFilteredQuery));
+    //     // dd(tmr(),$filterData['after']);
+    //
+    //     $time = str_replace('time = ', '', tmr());
+    //
+    //     return inertia('Categories/Show', compact('breadcrumbs', 'categoryNode', 'subCategories', 'filterData', 'products', 'time'));
+    // }
 
 
     // public function showOld(string $path): Response|ResponseFactory
