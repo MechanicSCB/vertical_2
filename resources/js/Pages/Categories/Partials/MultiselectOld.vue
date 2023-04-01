@@ -39,9 +39,11 @@ function clearSelect() {
 }
 
 function filteredOptions() {
-    return props.options.filter(v => v.value.toLowerCase().includes(search.value.toLowerCase()))
-        .sort((a, b) => a.value > b.value)
-        // .sort((a, b) => props.form.params[props.field]?.includes(b.value) - props.form.params[props.field]?.includes(a.value))
+    return Object.keys(props.options).filter(v => v.toLowerCase().includes(search.value.toLowerCase()))
+    return props.options.filter(v => v.toLowerCase().includes(search.value.toLowerCase()))
+        .sort()
+        // sort below raise up selected option
+        // .sort((a, b) => props.form.params[props.field]?.includes(b) - props.form.params[props.field]?.includes(a))
 }
 </script>
 
@@ -79,12 +81,12 @@ function filteredOptions() {
             <input v-if="search !== '' || filteredOptions().length > 10" v-model="search" type="text" class="border-none !ring-0 rounded bg-ui-light text-ui-text-secondary mr-3">
 
             <div class="h-full overflow-y-auto">
-                <label @click="toggleOption(option.value)" class="flex items-center gap-4" v-for="option in filteredOptions()">
+                <label @click="toggleOption(option)" class="flex items-center gap-4" v-for="option in filteredOptions()">
                     <!-- Checkbox Square -->
                     <div class="w-5 h-5 border border-ui-text-secondary rounded shrink-0">
-                        <CheckedIcon v-if="form.params[field]?.includes(option.value)" class="-mt-0.5 w-4.5 fill-ui-text-accent"/>
+                        <CheckedIcon v-if="form.params[field]?.includes(option)" class="-mt-0.5 w-4.5 fill-ui-text-accent"/>
                     </div>
-                    {{ option.value }} ({{option.node_count}})
+                    {{ option }}
                 </label>
             </div>
         </div>
