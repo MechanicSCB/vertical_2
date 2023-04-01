@@ -32,6 +32,25 @@ class CategoryController extends Controller
         $categoryNode = (new GetCategoryNodeFromPath())->get($path, $ancestorsCategories);
         $subCategories = $categoryNode->children->append(['image', 'title', 'url']);
 
+        $filterHandler = new ProductFilterHandler($categoryNode, request());
+
+        $products = $filterHandler->getPaginatedProducts();
+        $filterData = $filterHandler->getFilterData();
+
+        $time = str_replace('time = ', '', tmr());
+
+        return inertia('Categories/Show', compact('breadcrumbs', 'categoryNode', 'subCategories', 'filterData', 'products', 'time'));
+    }
+
+
+    public function show2(string $path): Response|ResponseFactory
+    {
+        $path = "catalog/$path";
+        $ancestorsCategories = (new GetAncestorsCategoriesFromPath())->get($path);
+        $breadcrumbs = (new GetBreadcrumbsFromUrl())->get($path, $ancestorsCategories);
+        $categoryNode = (new GetCategoryNodeFromPath())->get($path, $ancestorsCategories);
+        $subCategories = $categoryNode->children->append(['image', 'title', 'url']);
+
         $productsQuery = $this->getProductsQuery($categoryNode['path']);
 
         $filterHandler = new ProductFilterHandler();
@@ -68,76 +87,6 @@ class CategoryController extends Controller
         return inertia('Categories/Show', compact('breadcrumbs', 'categoryNode', 'subCategories', 'filterData', 'products', 'time'));
     }
 
-    public function getProductsQuery(string $categoryNodePath): Builder
-    {
-        $allSubCategoriesIds = Node::query()
-            ->where('path', 'like', $categoryNodePath . Node::$separator . '%')
-            ->orWhere('path', '=', $categoryNodePath)
-            ->pluck('category_id');
-
-        $productsQuery = DB::table('products')->whereIn('category_id', $allSubCategoriesIds);
-
-        return $productsQuery;
-    }
-
-    public function getProductsFilteredQuery(Builder $productsQuery, array $filterData, bool $withSimilar = false): Builder
-    {
-        $filter = request()->all();
-
-        if (isset($filter['sortBy'])) {
-            $column = @$filterData['sort_options'][$filter['sortBy']]['column'];
-            $direction = @$filterData['sort_options'][$filter['sortBy']]['direction'];
-
-            if ($column && $direction) {
-                $productsQuery->orderBy($column, $direction);
-            }
-        }
-
-        if (isset($filter['search'])) {
-            $searchStrings = Arr::wrap($filter['search']);
-
-            $productsQuery->where(function (Builder $q) use ($searchStrings){
-                    foreach ($searchStrings as $searchStr){
-                        $q->orWhereFullText('name', $searchStr, ['language' => 'russian']);
-                        $q->orWhereFullText('description', $searchStr, ['language' => 'russian']);
-                        $q->orWhereFullText('params', $searchStr, ['language' => 'russian']);
-                    }
-
-                    return $q;
-                }
-            );
-        }
-
-        if (isset($filter['priceFrom'])) {
-            $productsQuery->where('price', '>=', $filter['priceFrom']);
-        }
-
-        if (isset($filter['priceTo'])) {
-            $productsQuery->where('price', '<=', $filter['priceTo']);
-        }
-
-        foreach ($filter['params'] ?? [] as $paramName => $values) {
-            // Validation query paramName
-            if (! isset($filterData['params'][$paramName])) {
-                break;
-            }
-
-            // Validation query paramValues
-            $paramValues = [];
-
-            foreach ($values as $value) {
-                if (! in_array($value, array_column($filterData['params'][$paramName], 'value') ?? [])) {
-                    continue;
-                }
-
-                $paramValues[] = "'$value'";
-            }
-
-            $productsQuery->whereRaw("params->>'" . $paramName . "' in (" . implode(",", $paramValues) . ")");
-        }
-
-        return $productsQuery;
-    }
 
     // public function showOld(string $path): Response|ResponseFactory
     // {
