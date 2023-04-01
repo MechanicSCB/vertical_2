@@ -60,7 +60,7 @@ class CategoryController extends Controller
             }
         }
 
-        $filterData['after'] = $filterHandler->getFilterAfterData(clone($productsFilteredQuery));
+        $filterData['after'] = $filterHandler->getFilterData(clone($productsFilteredQuery));
         // dd(tmr(),$filterData['after']);
 
         $time = str_replace('time = ', '', tmr());
