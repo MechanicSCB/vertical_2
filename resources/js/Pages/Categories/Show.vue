@@ -24,7 +24,7 @@ let props = defineProps({
             <span class="text-xs text-ui-text-secondary">({{ time }})</span>
         </h1>
 
-        <!--<CategoriesGrid :categories="subCategories"/>-->
+        <CategoriesGrid :categories="subCategories"/>
 
         <div class="mt-10 flex md:flex-row flex-col gap-8">
             <ProductsFilter class="2xl:w-1/4 xl:w-1/3 md:w-1/2 w-full" :productsTotal="products.total" :filterData="filterData" :time="time"/>

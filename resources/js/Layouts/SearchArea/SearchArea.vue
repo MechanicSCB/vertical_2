@@ -22,7 +22,9 @@ async function getSearchResults() {
     searchResults.value = (await axios.post('/get-search-results', {searchString: searchString.value})).data;
 }
 
+// TODO import lodash throw error when ssr server started
 watch(searchString, throttle(() =>getSearchResults() , 500));
+// watch(searchString, getSearchResults());
 </script>
 <template>
     <div id="search_area">
