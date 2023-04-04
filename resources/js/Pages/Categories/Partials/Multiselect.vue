@@ -81,7 +81,7 @@ function filteredOptions() {
             <input v-if="search !== '' || filteredOptions().length > 10" v-model="search" type="text" class="border-none !ring-0 rounded bg-ui-light text-ui-text-secondary mr-3">
 
             <div class="h-full overflow-y-auto">
-                <label @click="toggleOption(option.value)" class="flex items-center gap-4" v-for="option in filteredOptions()">
+                <label @click="toggleOption(option.value)" class="flex items-center gap-4 w-fit cursor-pointer" v-for="option in filteredOptions()">
                     <!-- Checkbox Square -->
                     <div class="w-5 h-5 border border-ui-text-secondary rounded shrink-0">
                         <CheckedIcon v-if="form.params[field]?.includes(option.value)" class="-mt-0.5 w-4.5 fill-ui-text-accent"/>

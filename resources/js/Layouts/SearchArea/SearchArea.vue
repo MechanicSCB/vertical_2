@@ -14,6 +14,7 @@ const searchInputEl = ref(null)
 provide('searchString',searchString);
 
 onMounted(() => {
+    // TODO focus does not work
     searchInputEl.value.focus();
     watch(showSearchArea, searchInputEl.value.focus());
 });
