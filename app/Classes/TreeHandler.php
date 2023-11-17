@@ -11,7 +11,7 @@ class TreeHandler
     /**
      * Reference tree making function, it works much faster (3-5 times on big trees), than getTreeRec with addNodeToTree recursive function
      * Require sorting nodes by level
-     * if you don't use reference and set nodes to tree directly, it's can be a little faster on big deep trees
+     * if you don't use reference and set nodes to tree directly, it can be a little faster on big deep trees
      */
     public function getTree(array $nodes): array
     {

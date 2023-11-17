@@ -122,7 +122,7 @@ let handleScroll = function (event) {
 
     <!-- TODO ref -->
     <!-- Fixed -->
-    <div v-if="isScrolled" class="fixed z-[60] xl:block hidden top-0 w-full h-[106px] bg-ui-body  shadow-lg">
+    <div v-if="isScrolled" class="fixed z-[60] xl:block hidden top-0 w-full h-[106px] bg-ui-body shadow-lg">
         <div class="mx-auto px-9 w-full max-w-[1656px]">
             <!-- Bottom Row -->
             <div class="mt-5 flex items-center justify-between">

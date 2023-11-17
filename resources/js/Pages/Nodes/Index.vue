@@ -11,8 +11,6 @@ let openedNodes = ref( JSON.parse(sessionStorage.getItem('openedNodes')) ?? [1])
 
 provide('moveMode', moveMode)
 provide('openedNodes', openedNodes)
-
-
 </script>
 <template>
     <div class="px-12">
