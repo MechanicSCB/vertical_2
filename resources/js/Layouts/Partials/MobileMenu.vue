@@ -8,7 +8,7 @@ let showMobileMenu = inject('showMobileMenu');
 </script>
 
 <template>
-    <div @click="showMobileMenu=false" class="fixed w-full h-screen bg-[rgba(0,0,0,0.4)]">
+    <div @click="showMobileMenu=false" class="fixed xl:hidden z-10 w-full h-screen bg-[rgba(0,0,0,0.4)]">
         <div @click.stop class="md:w-5/12 w-4/5 h-full text-ui-text-primary font-semibold bg-ui-secondary overflow-y-auto pb-14">
             <!-- TODO remove dashed border and add active link border -->
             <div class="flex flex-col text-lg">

@@ -40,6 +40,11 @@ class Product extends Model
 
     public function getImages(): array
     {
+        return ["https://vertical.ru/upload/external/{$this['code']}.jpg"];
+    }
+
+    public function getImagesLocal(): array
+    {
         $additionalImagesPath = storage_path("app/public/images/products/cropped/add/{$this['code']}");
         $additionalImages = [];
 

@@ -25,7 +25,7 @@ class ProductController extends Controller
             'url' => '/products/' . $product->slug,
         ];
 
-        $product['images'] = $product->getImages();
+        // $product['images'] = $product->getImages();
         $product['previews'] = $product->getPreviews();
 
         return inertia("Products/Show", compact('product', 'breadcrumbs'));

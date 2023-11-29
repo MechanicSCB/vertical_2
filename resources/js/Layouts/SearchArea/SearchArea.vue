@@ -8,7 +8,7 @@ import {throttle} from "lodash";
 let showSearchArea = inject('showSearchArea');
 let searchResults = reactive({});
 let searchString = ref('');
-let showedResults = ref('meili');
+let showedResults = ref('pgsql');
 const searchInputEl = ref(null)
 
 provide('searchString',searchString);
@@ -53,14 +53,14 @@ watch(searchString, throttle(() =>getSearchResults() , 500));
                         <div v-if="Object.keys(searchResults).length" class="bg-ui-body rounded-b">
                             <!-- SEARCH RESULTS TAB LABELS -->
                             <div class="mt-2 px-6 flex gap-4">
-                                <div @click="showedResults='meili'"
-                                     class="px-3 cursor-pointer rounded-t border border-b-0"
-                                     :class="showedResults==='meili' ? 'text-ui-text-accent':'text-ui-text-secondary border-[rgba(0,0,0,0)]'"
-                                >meili</div>
                                 <div @click="showedResults='pgsql'"
                                      class="px-3 cursor-pointer rounded-t border border-b-0"
                                      :class="showedResults==='pgsql' ? 'text-ui-text-accent':'text-ui-text-secondary border-[rgba(0,0,0,0)]'"
                                 >pgsql</div>
+                                <div @click="showedResults='meili'"
+                                     class="px-3 cursor-pointer rounded-t border border-b-0"
+                                     :class="showedResults==='meili' ? 'text-ui-text-accent':'text-ui-text-secondary border-[rgba(0,0,0,0)]'"
+                                >meili</div>
                             </div>
 
                             <!-- SEARCH RESULTS TABS CONTENT -->

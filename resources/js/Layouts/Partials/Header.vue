@@ -38,8 +38,7 @@ let handleScroll = function (event) {
             <!-- Geolocation -->
             <div class="flex cursor-pointer group">
                 <GeolocationIcon class="w-7 fill-ui-text-secondary"/>
-                <div
-                    class="ml-2 h-fit text-ui-text-accent border-b border-dashed border-ui-text-accent group-hover:border-0"
+                <div class="ml-2 h-fit text-ui-text-accent border-b border-dashed border-ui-text-accent group-hover:border-0"
                 >Москва
                 </div>
             </div>

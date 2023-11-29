@@ -33,8 +33,10 @@ function slideDown() {
 }
 
 function getActiveImageLink() {
-    // return 'https://vertical.ru/upload/external/' + props.product.code + '.jpg';
-    return props.product.previews[selectedImage.value].replace('s220', 'cropped');
+    let n = props.product.previews[selectedImage.value].lastIndexOf('/');;
+
+    return 'https://vertical.ru/upload/external/' + props.product.previews[selectedImage.value].substring(n + 1);
+    //return props.product.previews[selectedImage.value].replace('s220', 'cropped');
 }
 </script>
 <template>
