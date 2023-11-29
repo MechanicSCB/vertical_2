@@ -10,7 +10,8 @@ class MeiliClientHandler
 {
     public function search(string $index, string $searchString, array $searchParams = []): array
     {
-        $client = new Client('http://meilisearch:7700');
+        $host = env('MEILISEARCH_HOST', 'http://meilisearch:7700');
+        $client = new Client($host);
         // $client = new Client('http://127.0.0.1:7700');
 
         $res = $client->index($index)->search($searchString, $searchParams);

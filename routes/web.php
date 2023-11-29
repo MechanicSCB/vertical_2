@@ -22,8 +22,8 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/test', [\App\Dev\ImageHandler::class,'test']);
-Route::get('/seed', [\Database\Seeders\WordSeeder::class,'run']);
+Route::get('/test', [SearchController::class, 'test']);
+Route::get('/seed', [\Database\Seeders\WordSeeder::class, 'run']);
 //Route::get('/reverse', [\Database\Seeders\OrderSeeder::class,'run']);
 //Route::get('/factory', [\Database\Factories\OrderFactory::class,'definition']);
 
@@ -45,7 +45,7 @@ Route::post('/products_data', [ProductController::class, 'getData'])->name('prod
 
 // Order
 Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
-Route::post('/orders',[OrderController::class, 'store'])->name('orders.store');
+Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 
 // ADMIN PANEL
 Route::get('/admin', [AdminCategoryController::class, 'index'])->name('admin.index');
@@ -53,10 +53,10 @@ Route::get('/admin', [AdminCategoryController::class, 'index'])->name('admin.ind
 // ADMIN CATEGORIES
 Route::get('/admin/categories', [AdminCategoryController::class, 'index'])->name('admin.categories.index');
 Route::get('/admin/categories/edit/{category}', [AdminCategoryController::class, 'edit'])->name('admin.categories.edit');
-Route::patch('/admin/categories/{category}',[AdminCategoryController::class, 'update'])->name('admin.categories.update');
+Route::patch('/admin/categories/{category}', [AdminCategoryController::class, 'update'])->name('admin.categories.update');
 Route::get('/admin/categories/create', [AdminCategoryController::class, 'create'])->name('admin.categories.create');
-Route::post('/admin/categories',[AdminCategoryController::class, 'store'])->name('admin.categories.store');
-Route::delete('/admin/categories/{category}',[AdminCategoryController::class, 'destroy'])->name('admin.categories.destroy');
+Route::post('/admin/categories', [AdminCategoryController::class, 'store'])->name('admin.categories.store');
+Route::delete('/admin/categories/{category}', [AdminCategoryController::class, 'destroy'])->name('admin.categories.destroy');
 
 // ADMIN NODES
 Route::get('/admin/nodes', [NodeController::class, 'index'])->name('admin.nodes.index');
@@ -75,20 +75,19 @@ Route::delete('/nodes/{node}', [NodeController::class, 'destroy'])->name('nodes.
 // ADMIN PRODUCTS
 Route::get('/admin/products', [AdminProductController::class, 'index'])->name('admin.products.index');
 Route::get('/admin/products/edit/{product}', [AdminProductController::class, 'edit'])->name('admin.products.edit');
-Route::patch('/admin/products/{product}',[AdminProductController::class, 'update'])->name('admin.products.update');
+Route::patch('/admin/products/{product}', [AdminProductController::class, 'update'])->name('admin.products.update');
 Route::get('/admin/products/create', [AdminProductController::class, 'create'])->name('admin.products.create');
-Route::post('/admin/products',[AdminProductController::class, 'store'])->name('admin.products.store');
-Route::delete('/admin/products/{product}',[AdminProductController::class, 'destroy'])->name('admin.products.destroy');
+Route::post('/admin/products', [AdminProductController::class, 'store'])->name('admin.products.store');
+Route::delete('/admin/products/{product}', [AdminProductController::class, 'destroy'])->name('admin.products.destroy');
 
 // ADMIN ORDERS
 Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders.index');
-Route::delete('/admin/orders/{order}',[OrderController::class, 'destroy'])->name('admin.orders.destroy');
+Route::delete('/admin/orders/{order}', [OrderController::class, 'destroy'])->name('admin.orders.destroy');
 
 
 // SEARCH
-Route::post('/get-search-results',[SearchController::class, 'getQuickSearchResults'])->name('getSearchResults');
-Route::get('/get-search-results',[SearchController::class, 'getQuickSearchResults']);
-
+Route::post('/get-search-results', [SearchController::class, 'getQuickSearchResults'])->name('getSearchResults');
+Route::get('/get-search-results', [SearchController::class, 'getQuickSearchResults']);
 
 
 // JETSTREAM

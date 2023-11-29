@@ -61,14 +61,20 @@ watch(searchString, throttle(() =>getSearchResults() , 500));
                                      class="px-3 cursor-pointer rounded-t border border-b-0"
                                      :class="showedResults==='meili' ? 'text-ui-text-accent':'text-ui-text-secondary border-[rgba(0,0,0,0)]'"
                                 >meili</div>
+                                <div @click="showedResults='elastic'"
+                                     class="px-3 cursor-pointer rounded-t border border-b-0"
+                                     :class="showedResults==='elastic' ? 'text-ui-text-accent':'text-ui-text-secondary border-[rgba(0,0,0,0)]'"
+                                >elastic</div>
                             </div>
 
                             <!-- SEARCH RESULTS TABS CONTENT -->
                             <div class="px-6">
-                                <SearchResults v-show="showedResults === 'meili'"
-                                               :results="searchResults?.value?.meili ?? {}"/>
                                 <SearchResults v-show="showedResults === 'pgsql'"
                                                :results="searchResults?.value?.pgsql ?? {}"/>
+                                <SearchResults v-show="showedResults === 'meili'"
+                                               :results="searchResults?.value?.meili ?? {}"/>
+                                <SearchResults v-show="showedResults === 'elastic'"
+                                               :results="searchResults?.value?.elastic ?? {}"/>
                             </div>
                         </div>
                     </div>
