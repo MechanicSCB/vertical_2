@@ -67,7 +67,7 @@ function submit() {
 <template>
     <div class="">
         <div class="flex w-full">
-            <div class="-mb-[1px] flex items-end px-8 py-4 rounded-t-[30px] border border-b-white text-2xl font-semibold text-ui-text-accent">
+            <div class="-mb-[1px] flex items-end px-8 py-4 rounded-[30px] md:rounded-b-none border md:border-b-white text-2xl font-semibold shadow-lg md:shadow-none text-ui-text-accent">
                 <span class="mb-0.5">Фильтр</span>
                 <FilterIcon class="ml-1 fill-ui-text-accent"/>
             </div>
@@ -75,7 +75,7 @@ function submit() {
         </div>
 
         <!-- FORM -->
-        <div class="px-8 py-4 border">
+        <div class="hidden md:block px-8 py-4 border">
             <!--  SORT  -->
             <select @change="submit" v-model="form.sortBy"
                     class="mt-2 w-full px-6 py-3 text-lg border border-ui-border-primary rounded-[30px]" type="text">
