@@ -35,11 +35,11 @@ class ElasticSearchHandler
 
         $productsRawResults = $this->search('products', $searchString);
 
-        $items = array_map(fn($v) => $v['_source'], $productsRawResults['hits']['hits']);
+        $items = array_map(fn($v) => $v['_source'], $productsRawResults['hits']['hits'] ?? []);
 
-        $searchResults['products']['total'] = $productsRawResults['hits']['total']['value'];
+        $searchResults['products']['total'] = $productsRawResults['hits']['total']['value'] ?? 0;
         $searchResults['products']['items'] = $items;
-        $searchResults['products']['time'] = $productsRawResults['took'];
+        $searchResults['products']['time'] = $productsRawResults['took'] ?? 0;
 
         $searchResults['facet'] = [];
 

@@ -14,7 +14,11 @@ class MeiliClientHandler
         $client = new Client($host);
         // $client = new Client('http://127.0.0.1:7700');
 
-        $res = $client->index($index)->search($searchString, $searchParams);
+        try {
+            $res = $client->index($index)->search($searchString, $searchParams);
+        } catch (\Exception $e) {
+            return ['errorMessage' => $e->getMessage()];
+        }
 
         return $res->getRaw();
     }

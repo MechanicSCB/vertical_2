@@ -21,9 +21,9 @@ class MeiliSearchHandler
                 // 'filter' => str_replace('category_id', 'parent_id', $client->getFilterString($params)),
             ]);
 
-        $searchResults['categories']['total'] = $categoriesRawResults['estimatedTotalHits'];
-        $searchResults['categories']['items'] = $categoriesRawResults['hits'];
-        $searchResults['categories']['time'] = $categoriesRawResults['processingTimeMs'];
+        $searchResults['categories']['total'] = $categoriesRawResults['estimatedTotalHits'] ?? 0;
+        $searchResults['categories']['items'] = $categoriesRawResults['hits'] ?? [];
+        $searchResults['categories']['time'] = $categoriesRawResults['processingTimeMs'] ?? 0;
 
         $productsRawResults = $client->search('products', $searchString,
             [
@@ -32,11 +32,11 @@ class MeiliSearchHandler
                 // 'filter' => $client->getFilterString([$params]),
             ]);
 
-        $searchResults['products']['total'] = $productsRawResults['estimatedTotalHits'];
-        $searchResults['products']['items'] = $productsRawResults['hits'];
-        $searchResults['products']['time'] = $productsRawResults['processingTimeMs'];
+        $searchResults['products']['total'] = $productsRawResults['estimatedTotalHits'] ?? 0;
+        $searchResults['products']['items'] = $productsRawResults['hits'] ?? [];
+        $searchResults['products']['time'] = $productsRawResults['processingTimeMs'] ?? 0;
 
-        $categoriesFacet = $productsRawResults['facetDistribution']['category_id'];
+        $categoriesFacet = $productsRawResults['facetDistribution']['category_id'] ?? [];
         $categoriesData = Category::query()->with('nodes')->find(array_keys($categoriesFacet))->keyBy('id');
 
         foreach ($categoriesFacet as $categoryId => $itemsCount) {
