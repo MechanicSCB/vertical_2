@@ -3,6 +3,9 @@
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Symfony\Component\VarDumper\Cloner\VarCloner;
+use Symfony\Component\VarDumper\Dumper\CliDumper;
+use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 use Symfony\Component\VarDumper\VarDumper;
 
 function stdToArray($input): array
@@ -195,5 +198,29 @@ if (! function_exists('flat_children')) {
             }
         }
         return $result;
+    }
+}
+
+if (! function_exists('ddf')) {
+    function ddf(...$vars)
+    {
+        $file = str_replace(base_path(), '', debug_backtrace()[0]['file']);
+        $line = debug_backtrace()[0]['line'];
+
+        VarDumper::setHandler(function ($var) {
+            $cloner = new VarCloner();
+            $cloner->setMaxItems(-1); // Specifying -1 removes the limit
+            $dumper = 'cli' === PHP_SAPI ? new CliDumper() : new HtmlDumper();
+
+            $dumper->dump($cloner->cloneVar($var));
+        });
+
+        VarDumper::dump("DEEP $file:$line ". tmr());
+
+        foreach ($vars as $v) {
+            VarDumper::dump($v);
+        }
+
+        exit(1);
     }
 }

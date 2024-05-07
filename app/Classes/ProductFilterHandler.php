@@ -32,7 +32,7 @@ class ProductFilterHandler
     {
         $productsFilteredQuery = $this->getProductsFilteredQuery();
 
-        $products = (clone ($productsFilteredQuery))
+        $products = (clone($productsFilteredQuery))
             ->select(['id', 'code', 'price', 'slug', 'name', 'availability'])
             ->paginate(34)->onEachSide(1)->withQueryString();
 
@@ -42,11 +42,11 @@ class ProductFilterHandler
 
             $hints = Arr::flatten($filterData['hints']);
 
-            if(count($hints)){
+            if (count($hints)) {
                 request()['search'] = $hints;
                 $productsFilteredQuery = $this->getProductsFilteredQuery();
 
-                $products = (clone ($productsFilteredQuery))
+                $products = (clone($productsFilteredQuery))
                     ->select(['id', 'code', 'price', 'slug', 'name', 'availability'])
                     ->paginate(34)->onEachSide(1)->withQueryString();
             }
@@ -61,15 +61,15 @@ class ProductFilterHandler
         $filterData['sort_options'] = $this->sortOptions;
         $filterData['form'] = $this->form;
 
-        if($filterData['form'] !== []){
+        if ($filterData['form'] !== []) {
             $filtered = $this->getQueryFilterData('filtered');
             $filterData['minPrice'] = $filtered['minPrice'] ?? $filterData['minPrice'];
             $filterData['maxPrice'] = $filtered['maxPrice'] ?? $filterData['maxPrice'];
             $filterData['form']['priceFrom'] = $filterData['minPrice'];
             $filterData['form']['priceTo'] = $filterData['maxPrice'];
 
-            foreach ($filterData['params'] as $paramName => $paramItems){
-                foreach ($paramItems as $paramValue => $paramItem){
+            foreach ($filterData['params'] as $paramName => $paramItems) {
+                foreach ($paramItems as $paramValue => $paramItem) {
                     $filterData['params'][$paramName][$paramValue]['filtered_count'] = $filtered['params'][$paramName][$paramValue]['node_count'] ?? 0;
                 }
             }
@@ -82,9 +82,9 @@ class ProductFilterHandler
 
     protected function getQueryFilterData(string $mode = 'allNode'): array
     {
-        if($mode === 'allNode'){
+        if ($mode === 'allNode') {
             $query = $this->getNodeProductsQuery();
-        }else{
+        } else {
             $query = $this->getProductsFilteredQuery();
         }
 
@@ -96,7 +96,7 @@ class ProductFilterHandler
         return $filterData;
     }
 
-    protected function getFilterDataParams(Builder $query):array
+    protected function getFilterDataParams(Builder $query): array
     {
         $queriedProductsParams = (clone($query))->pluck('params')->toArray();
 
@@ -106,9 +106,9 @@ class ProductFilterHandler
             $productParams = json_decode($productParams, 1);
 
             foreach ($productParams as $param => $value) {
-                if(array_key_exists($value, $filterDataParams[$param] ?? [])){
+                if (array_key_exists($value, $filterDataParams[$param] ?? [])) {
                     $filterDataParams[$param][$value]['node_count'] += 1;
-                }else{
+                } else {
                     $filterDataParams[$param][$value]['value'] = $value;
                     $filterDataParams[$param][$value]['node_count'] = 1;
                 }
@@ -150,16 +150,14 @@ class ProductFilterHandler
         if (isset($this->form['search'])) {
             $searchStrings = Arr::wrap($this->form['search']);
 
-            $productsQuery->where(function (Builder $q) use ($searchStrings){
-                foreach ($searchStrings as $searchStr){
+            $productsQuery->where(function (Builder $q) use ($searchStrings) {
+                foreach ($searchStrings as $searchStr) {
                     $q->orWhereFullText('name', $searchStr, ['language' => 'russian']);
                     $q->orWhereFullText('description', $searchStr, ['language' => 'russian']);
                     $q->orWhereFullText('params', $searchStr, ['language' => 'russian']);
                 }
-
                 return $q;
-            }
-            );
+            });
         }
 
         if (isset($this->form['priceFrom'])) {
@@ -172,7 +170,7 @@ class ProductFilterHandler
 
         foreach ($this->form['params'] ?? [] as $paramName => $values) {
             // Validation query paramName
-            if (! isset($this->allProductsParamsNamesAndValues['names'][$paramName])) {
+            if (!isset($this->allProductsParamsNamesAndValues['names'][$paramName])) {
                 break;
             }
 
@@ -180,7 +178,7 @@ class ProductFilterHandler
 
             foreach ($values as $value) {
                 // Validation query paramValues
-                if (! isset($this->allProductsParamsNamesAndValues['values'][$value])) {
+                if (!isset($this->allProductsParamsNamesAndValues['values'][$value])) {
                     break;
                 }
 
@@ -199,7 +197,7 @@ class ProductFilterHandler
 
         $allProductsParamsNamesAndValues = [];
 
-        foreach ($productsParamsData as $productParamsData){
+        foreach ($productsParamsData as $productParamsData) {
             $productParamsData = json_decode($productParamsData, 1);
 
             foreach ($productParamsData as $param => $value) {

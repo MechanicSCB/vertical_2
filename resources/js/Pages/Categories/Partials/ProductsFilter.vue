@@ -111,9 +111,9 @@ function submit() {
                 <div id="slider" class="my-9 h-1 bg-ui-accent"></div>
                 <div class="flex gap-8">
                     <input @change="changePriceInput" v-model="form.priceFrom" :placeholder="filterData.minPrice"
-                           class="w-full px-6 py-3 text-lg border border-ui-border-primary rounded-[30px]" type="text"  pattern="\d*">
+                           class="w-full px-6 py-3 text-lg border border-ui-border-primary rounded-[30px]" type="text" pattern="\d*">
                     <input @change="changePriceInput" v-model="form.priceTo" :placeholder="filterData.maxPrice"
-                           class="w-full px-6 py-3 text-lg border border-ui-border-primary rounded-[30px]" type="text">
+                           class="w-full px-6 py-3 text-lg border border-ui-border-primary rounded-[30px]" type="text" pattern="\d*">
                 </div>
             </div>
 

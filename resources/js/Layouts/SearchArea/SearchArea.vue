@@ -35,11 +35,11 @@ watch(searchString, throttle(() =>getSearchResults() , 500));
         <!-- Search Area -->
         <div @click.stop class="absolute z-[75] top-8 left-0 right-0 mx-auto max-w-[1200px] bg-ui-body rounded">
             <div class="flex">
-                <div class="relative my-8 mx-24 w-full h-12 rounded flex">
-                    <div class="text-lg font-bold w-32 h-full bg-ui-accent_light justify-center flex items-center shrink-0">
+                <div class="relative my-8 mx-2 sm:mx-8 md:mx-24 w-full h-12 rounded flex">
+                    <div class="hidden lg:flex rounded-l text-lg font-bold w-32 h-full bg-ui-accent_light justify-center items-center shrink-0">
                         <button @click="showCategoryFilter = !showCategoryFilter">Везде</button>
                     </div>
-                    <div class="w-[1px] bg-ui-text-light my-2"></div>
+                    <div class="hidden lg:flex w-[1px] bg-ui-text-light my-2"></div>
                     <div class="w-full">
                         <div class="flex h-full items-center">
                             <input ref="searchInputEl" v-model="searchString" placeholder="Что вы хотите найти?" type="text"
@@ -78,11 +78,11 @@ watch(searchString, throttle(() =>getSearchResults() , 500));
                             </div>
                         </div>
                     </div>
-                    <div class="text-lg font-bold w-28 bg-ui-accent h-full shrink-0 rounded-r flex justify-center items-center cursor-pointer">
+                    <div class="hidden lg:flex text-lg font-bold w-28 bg-ui-accent h-full shrink-0 rounded-r justify-center items-center cursor-pointer">
                         <MagnifyIcon class="w-6 fill-ui-text-accent_inverse"/>
                     </div>
                 </div>
-                <div class="absolute right-10 h-full flex items-center">
+                <div class="absolute right-4 lg:right-10 h-full flex items-center">
                     <button @click="showSearchArea=false" class="rounded-full w-5 h-5 fill-ui-text-secondary">
                         <CloseIcon/>
                     </button>
