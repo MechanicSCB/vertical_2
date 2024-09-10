@@ -1,0 +1,99 @@
+version: '3'
+services:
+    laravel.test:
+        build:
+            context: ./vendor/laravel/sail/runtimes/8.2
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.2/app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+        volumes:
+            - '.:/var/www/html'
+            - '../common_data:/var/www/html/common_data' # DEV ONLY!
+        networks:
+            - sail
+        depends_on:
+            - pgsql
+    pgsql:
+        image: 'postgres:15'
+        ports:
+            - '${FORWARD_DB_PORT:-5432}:5432'
+        environment:
+            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+        volumes:
+            - 'sail-pgsql:/var/lib/postgresql/data'
+            - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - pg_isready
+                - '-q'
+                - '-d'
+                - '${DB_DATABASE}'
+                - '-U'
+                - '${DB_USERNAME}'
+            retries: 3
+            timeout: 5s
+    adminer:
+        image: 'adminer:latest'
+        ports:
+            - '8080:8080'
+        networks:
+            - sail
+    meilisearch:
+        image: "getmeili/meilisearch:v1.0"
+        ports:
+            - '7700:7700'
+        volumes:
+            - './meili_data:/meili_data'
+        #environment:
+        #    - MEILI_MASTER_KEY=masterKey
+        #    - MEILI_NO_ANALYTICS=true
+        networks:
+            - sail
+        healthcheck:
+            test: [ "CMD", "wget", "--no-verbose", "--spider",  "http://meilisearch:7700/health" ]
+            retries: 3
+            timeout: 5s
+    elasticsearch:
+        image: "elasticsearch:7.17.9"
+        #restart: always
+        environment:
+            - discovery.type=single-node
+            #- bootstrap.memory_lock=true
+            #- "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        #ulimits:
+        #    memlock:
+        #        soft: -1
+        #        hard: -1
+        volumes:
+            - './elastic_data:/usr/share/elasticsearch/data'
+        ports:
+            - '9200:9200'
+        networks:
+            - sail
+networks:
+    sail:
+        driver: bridge
+volumes:
+    sail-pgsql:
+        driver: local
+    meilisearch:
+        driver: local
+    elasticsearch:
+        driver: local
